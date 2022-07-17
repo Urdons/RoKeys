@@ -9,14 +9,29 @@ On this page you will find sections labeled as follows: <br>
 - **Installation**, <br>
 - **Basic Use**, and <br>
 - **Advanced Use** <br>
+- **Licensing** <br>
+
+## Terms of Use
+
+### I know I can't stop you from ignoring these terms but to be fair this is a free project so I'm sure you can deal with some brand exposure. <br>
+
+When using **RoKeys** in your game, please give credit back to this project, exposing this project to people who may need it is a big goal of mine and I hope that those of you who use it can abide by this rule. <br>
+**Official Branding can be found in the folder labeled `Branding`**.
+
+When **branching off** of this project, **redistrobuting** it, or making **your own distrobution**, please reference back to this page. For those who create their own distrobuton, please provide evidence that there is an **original** change in the code from this project to yours, copying code is not tolerated unless otherwise given permission *(this applies to copying code from other distrobutions, make sure you have permission before reusing code)*.
+
+**Do not forget** to take note of the `licensing` file, these additional terms are layered on top of terms found in that file *(**Apache License 2.0**)* and are not directly affiliated to the original lisencing. **You should thoroughly read through those conditions before using this project**.
+> you can also find a *link* to the **Apache License 2.0** along with some other info in the section labeled **Licensing**
 
 ## Installation
+
+**BEFORE INSTALLING PLEASE READ THE TERMS OF USE**
 
 To **Install** all you need to do is download the *latest version* from the **Releases Page**. <br>
 The file to look for will look *something* like this: `RoKeysV1.lua`
 
 Once you've downloaded the file to your *prefered destination* all you have to do is make a **Roblox project** <br>
-Then *(assuming you know how to make a new project)*, in **Roblox Studio** navigate to the `View` tab as seen at the *top* of the window <br>
+Then *(assuming you know how to make a new project)*, in **Roblox Studio** navigate to the `View` tab as seen at the *top* of the window. <br>
 ![Screenshot_20220716_235308](https://user-images.githubusercontent.com/56717172/179383183-84b3c395-edd8-4ee8-a378-2577b82ecfad.png) <br>
 
 And *enable* the `Explorer` <br>
@@ -27,7 +42,7 @@ in that menu look for the option: `Insert from File` <br>
 ![Screenshot_20220716_235814](https://user-images.githubusercontent.com/56717172/179383467-f80f1fb9-6343-4cf6-a0ae-9a44cf040707.png)
 ![Screenshot_20220717_000404](https://user-images.githubusercontent.com/56717172/179383482-464aecae-d9d4-49ed-8a92-ef88f8c8f326.png) <br>
 
-From there all you have to do is *look* for the file you downloaded and **open** it
+From there all you have to do is *look* for the file you downloaded and **open** it.
 
 ## Basic Use
 
@@ -41,17 +56,17 @@ local RoKeys = require(ReplicatedStorage.RoKeysV1)
 
 --you may have to edit this depending on where you put RoKeys and the version of RoKeys
 ```
-And now you are ready to take full advantage of **RoKeys**
+And now you are ready to take full advantage of **RoKeys**.
 
 ### Adding keybinds
 
 To add a **keybind** use the function `AddKeyBind`. the function takes the name of a `bind` *(as a string)*, the `input` you want to assign to the bind *(as an EnumItem)*, and two `booleans` which determine wether then `bind` and `input` are *toggleable*.
-> as of v1 Enum.KeyCode is the only supported input type
+> as of v1 Enum.KeyCode is the only supported input type.
 ```lua
 AddKeyBind("example", Enum.KeyCode.X, true. false)
 --the first boolean effects the bind while the second effects the input
 ```
-This function can also be written where the `bind` and/or `input` are tables, containing both the `bind`/`input` and wether they are *toggleable* or not
+This function can also be written where the `bind` and/or `input` are tables, containing both the `bind`/`input` and wether they are *toggleable* or not.
 ```lua
 AddKeyBind({"example", true}, {Enum.KeyCode.X, false}) --notice the surrounding {} brackets
 --this will execute the same as the previous example
@@ -73,7 +88,7 @@ The function `DelKeyBind` takes the name of a `bind` *(as a string)* and an `inp
 DelKeyBind("example", Enum.KeyCode.X)
 --the input "Enum.KeyCode.X" will no longer interact with the bind "example"
 ```
-> similarly to `AddKeyBind`, `DelKeyBind` supports deleting multiple `binds` and `inputs`, I reccomend being more careful however, as you could accidentally delete keybinds
+> similarly to `AddKeyBind`, `DelKeyBind` supports deleting multiple `binds` and `inputs`, I reccomend being more careful however, as you could accidentally delete keybinds.
 
 You can also delete `inputs` or `binds` en-masse as shown below:
 ```lua
@@ -86,15 +101,31 @@ DelKeyBind(nil, Enum.KeyCode.X) --notice the bind is nil
 
 ### Reading Keybinds
 
-Reading Keybinds is a lot simpler as compared to *adding* or *removing* them. To read keybinds you are provided *two* functions; `BindState` and `InputState`, in each all you need to do is provide either the `bind` or `input` *(depening on which function you are using)* and the function will **return** a `boolean` of wether the `bind`/`input` is **off** or **on**
+Reading Keybinds is a lot simpler as compared to *adding* or *removing* them. To read keybinds you are provided *two* functions; `BindState` and `InputState`, in each all you need to do is provide either the `bind` or `input` *(depening on which function you are using)* and the function will **return** a `boolean` of wether the `bind`/`input` is **off** or **on**.
 ```lua
 if BindState("example") then --if bind "example" is on...
   --do something
 end
 --notice the function is in an if statement, that is because it returns a boolean
 ```
-> `InputState` has the same usage except reads from wether an input is on
+> `InputState` has the same usage except reads from wether an input is on.
 
 ## Advanced Usage
 
-> Currently WIP
+> Currently WIP, will contain info on how to manually read from data
+
+## Licensing 
+
+Copyright [2022] [Urdons]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
