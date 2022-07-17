@@ -6,7 +6,7 @@
 
 Links: 
 - **Discord**: *https://discord.gg/AyqHpaUnTe*
-- **Roblox**: *placeholder*
+- **Roblox**: *https://www.roblox.com/library/10263313095/RoKeys*
 
 On this page you will find sections labeled as follows: <br>
 - **Terms of Use**
