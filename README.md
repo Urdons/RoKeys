@@ -9,11 +9,12 @@ On this page you will find sections labeled as follows: <br>
 - **Installation**, <br>
 - **Basic Use**, and <br>
 - **Advanced Use** <br>
+- **FAQ** <br>
 - **Licensing** <br>
 
 ## Terms of Use
 
-### I know I can't stop you from ignoring these terms but. to be fair, this is a free project so I'm sure you can deal with some brand exposure and good deeds. <br>
+### By using this project you Agree to these terms and the terms of the official licesing. <br>
 
 When using **RoKeys** in your game, please give credit back to this project, exposing this project to people who may need it is a big goal of mine and I hope that those of you who use it can abide by this rule. <br>
 **Official Branding can be found in the folder labeled `Branding`**.
@@ -112,7 +113,42 @@ end
 
 ## Advanced Usage
 
-All data for **Keybinds** are stored in 
+this section is for advanced users, ready to get their hands dirty and work with my dirty code lol
+
+### Manually reading data
+
+All data for **Keybinds** are stored in two tables, `bindTable` and `inputTable` *(both in the form of a dictionary)*. These two tables' formatting is as follows:
+```lua
+bindTable {
+  bindName { --the name of the bind, depending on how many binds you have there will be that many of these
+    boolean, --wether it is on or off
+    boolean, --wether toggle is on
+    input --reference(s) to it's input(s), multiple may be listed here
+  }
+}
+
+inputTable { --same layout as bindTable
+  input { --this will likely say token followed by a string of numbers, do not worry as it is just a side effect of using EnumItems
+    boolean,
+    boolean,
+    bindName --like bindTable, multiple may be listed here
+  }
+}
+```
+I strongly recommend using the built in functions to add and remove Keybinds. this section is for if you want to be able to read more data or have a better understanding of how it is stored
+
+### Changing the code
+
+**BEFORE CHANGING THE CODE PLEASE READ THE TERMS OF USE**
+
+I made my best effort to comment as much as possible inside of my code, if you have any questions you can ask them on **Github Issues** *(may not respond very fast)* or **Discord** *(link found at start of the document)*. 
+> For frequently asked questions look in the following section (**FAQ**).
+
+## FAQ
+
+**FAQ** or **Frequently Asked Questions**, more specific questions can be found in the **Discord** *(link found at start of the document)*
+
+> Currently nothing here, this will become more populated as people ask questions. 
 
 ## Licensing 
 
