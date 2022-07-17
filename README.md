@@ -5,7 +5,7 @@
 **RoKeys** is an *Open-source* Keybinding script for **Roblox** that strives for *usability* and *versatility*
 
 Links: 
-- **Discord**: *placeholder*
+- **Discord**: *https://discord.gg/AyqHpaUnTe*
 - **Roblox**: *placeholder*
 
 On this page you will find sections labeled as follows: <br>
