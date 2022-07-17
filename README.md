@@ -145,7 +145,7 @@ I strongly recommend using the built in functions to add and remove Keybinds. th
 
 **BEFORE CHANGING THE CODE PLEASE READ THE TERMS OF USE**
 
-I made my best effort to comment as much as possible inside of my code, if you have any questions you can ask them on **Github Issues** *(may not respond very fast)* or **Discord** *(link found at start of the document)*. 
+I made my best effort to comment as much as possible inside of my code and will incrementally be bringing some of that here, if you have any questions you can ask them on **Github Issues** *(may not respond very fast)* or **Discord** *(link found at start of the document)*. 
 > For frequently asked questions look in the following section (**FAQ**).
 
 ## FAQ
