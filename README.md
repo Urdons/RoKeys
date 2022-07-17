@@ -4,7 +4,10 @@
 
 **RoKeys** is an *Open-source* Keybinding script for **Roblox** that strives for *usability* and *versatility*
 
-On this page you will find sections labeled **Installation**, **Basic Use**, and **Advanced Use**
+On this page you will find sections labeled as follows: <br>
+- **Installation**, <br>
+- **Basic Use**, and <br>
+- **Advanced Use** <br>
 
 ## Installation
 
@@ -24,3 +27,5 @@ in that menu look for the option: ```Insert from File``` <br>
 ![Screenshot_20220717_000404](https://user-images.githubusercontent.com/56717172/179383482-464aecae-d9d4-49ed-8a92-ef88f8c8f326.png) <br>
 
 From there all you have to do is *look* for the file you downloaded and **open** it
+
+## Basic Use
