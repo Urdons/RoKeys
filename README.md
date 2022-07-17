@@ -62,7 +62,7 @@ And now you are ready to take full advantage of **RoKeys**.
 ### Adding keybinds
 
 To add a **keybind** use the function `AddKeyBind`. the function takes the name of a `bind` *(as a string)*, the `input` you want to assign to the bind *(as an EnumItem)*, and two `booleans` which determine wether then `bind` and `input` are *toggleable*.
-> as of v1 Enum.KeyCode is the only supported input type.
+> as of v1 `Enum.KeyCode` is the only supported input type.
 ```lua
 AddKeyBind("example", Enum.KeyCode.X, true. false)
 --the first boolean effects the bind while the second effects the input
