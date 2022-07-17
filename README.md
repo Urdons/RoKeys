@@ -13,7 +13,7 @@ On this page you will find sections labeled as follows: <br>
 
 ## Terms of Use
 
-### I know I can't stop you from ignoring these terms but to be fair this is a free project so I'm sure you can deal with some brand exposure. <br>
+### I know I can't stop you from ignoring these terms but. to be fair, this is a free project so I'm sure you can deal with some brand exposure and good deeds. <br>
 
 When using **RoKeys** in your game, please give credit back to this project, exposing this project to people who may need it is a big goal of mine and I hope that those of you who use it can abide by this rule. <br>
 **Official Branding can be found in the folder labeled `Branding`**.
@@ -112,7 +112,7 @@ end
 
 ## Advanced Usage
 
-> Currently WIP, will contain info on how to manually read from data
+All data for **Keybinds** are stored in 
 
 ## Licensing 
 
