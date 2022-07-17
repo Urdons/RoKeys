@@ -7,9 +7,9 @@
 On this page you will find sections labeled as follows: <br>
 - **Terms of Use**
 - **Installation**, <br>
-- **Basic Use**, and <br>
-- **Advanced Use** <br>
-- **FAQ** <br>
+- **Basic Use**, <br>
+- **Advanced Use,** <br>
+- **FAQ,** and <br>
 - **Licensing** <br>
 
 ## Terms of Use
