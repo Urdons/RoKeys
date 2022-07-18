@@ -1,22 +1,36 @@
+--[[
+Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+]]
+
+local Custom = {}
+
 local uip = game:GetService("UserInputService")
 
-local RoKeys = {}
-
-RoKeys.inputTable = {}
-RoKeys.bindTable = {}
+Custom.inputTable = {}
+Custom.bindTable = {}
 
 --functions that return the value of a keybind
-function RoKeys.BindState (bind)
-	if RoKeys.bindTable[bind] ~= nil then --check to make sure the bind exists
-		return RoKeys.bindTable[bind][1]
+function Custom.BindState (bind)
+	if Custom.bindTable[bind] ~= nil then --check to make sure the bind exists
+		return Custom.bindTable[bind][1]
 	else
 		warn('Bind "' .. tostring(bind) .. '" does not exist or has not been created yet')
 	end
 end
 
-function RoKeys.InputState (input)
-	if RoKeys.inputTable[input] ~= nil then --check to make sure the input exists
-		return RoKeys.inputTable[input][1]
+function Custom.InputState (input)
+	if Custom.inputTable[input] ~= nil then --check to make sure the input exists
+		return Custom.inputTable[input][1]
 	else
 		warn('Input "' .. tostring(input) .. '" does not exist or has not been created yet')
 	end
@@ -24,16 +38,16 @@ end
 
 --the functions for adding a KeyBinds
 local function addKey (input, toggle, bind)
-	if RoKeys.inputTable[input] == nil then --check if the input exists
-		RoKeys.inputTable[input] = {false, toggle}
+	if Custom.inputTable[input] == nil then --check if the input exists
+		Custom.inputTable[input] = {false, toggle}
 	end
-	table.insert(RoKeys.inputTable[input], bind) --insert references to eachother
-	table.insert(RoKeys.bindTable[bind], input)
+	table.insert(Custom.inputTable[input], bind) --insert references to eachother
+	table.insert(Custom.bindTable[bind], input)
 end
 
 local function addBind (bind, toggle)
-	if RoKeys.bindTable[bind] == nil then --checks if the bind exists
-		RoKeys.bindTable[bind] = {false, toggle}
+	if Custom.bindTable[bind] == nil then --checks if the bind exists
+		Custom.bindTable[bind] = {false, toggle}
 	end
 end
 
@@ -61,7 +75,7 @@ local function addKeyLogic (input, bind, toggle)
 	end
 end
 --main function for adding keybinds
-function RoKeys.AddKeyBind (bind, input, bToggle, iToggle)
+function Custom.addKeyBind (bind, input, bToggle, iToggle)
 	if bToggle == nil then --defaults for mass toggle
 		bToggle = false
 	end
@@ -96,14 +110,14 @@ end
 
 --functions for removing keybinds
 local function DelKey (input, bind) --deleting keys
-	if RoKeys.inputTable[input] ~= nil then --checks to make sure the input exists
+	if Custom.inputTable[input] ~= nil then --checks to make sure the input exists
 		if bind == nil then --determines what behavior to use, to delete all instances or to delete a filtered ammount of instances
-			for i = 3, table.getn(RoKeys.inputTable[input]) do --finds the input then deletes it
-				table.remove(RoKeys.bindTable[RoKeys.inputTable[input][i]], table.find(RoKeys.bindTable[RoKeys.inputTable[input][i]], input))
+			for i = 3, table.getn(Custom.inputTable[input]) do --finds the input then deletes it
+				table.remove(Custom.bindTable[Custom.inputTable[input][i]], table.find(Custom.bindTable[Custom.inputTable[input][i]], input))
 			end
-			RoKeys.inputTable[input] = nil
+			Custom.inputTable[input] = nil
 		else
-			table.remove(RoKeys.inputTable[input], table.find(RoKeys.inputTable[input], bind)) --remove all references to bind in inputTable
+			table.remove(Custom.inputTable[input], table.find(Custom.inputTable[input], bind)) --remove all references to bind in inputTable
 		end
 	else
 		warn('Input "' .. tostring(input) .. '" does not exist or has not been created yet')
@@ -111,14 +125,14 @@ local function DelKey (input, bind) --deleting keys
 end
 
 local function DelBind (bind, input) --deleting binds
-	if RoKeys.bindTable[bind] ~= nil then --checks to make sure the bind exists
+	if Custom.bindTable[bind] ~= nil then --checks to make sure the bind exists
 		if input == nil then --determines what behavior to use, to delete all instances or to delete a filtered ammount of instances
-			for i = 3, table.getn(RoKeys.bindTable[bind]) do --finds the bind then deletes it
-				table.remove(RoKeys.inputTable[RoKeys.bindTable[bind][i]], table.find(RoKeys.inputTable[RoKeys.bindTable[bind][i]], bind))
+			for i = 3, table.getn(Custom.bindTable[bind]) do --finds the bind then deletes it
+				table.remove(Custom.inputTable[Custom.bindTable[bind][i]], table.find(Custom.inputTable[Custom.bindTable[bind][i]], bind))
 			end
-			RoKeys.bindTable[bind] = nil
+			Custom.bindTable[bind] = nil
 		else
-			table.remove(RoKeys.bindTable[bind], table.find(RoKeys.bindTable[bind], input)) --remove all references to input in bindTable
+			table.remove(Custom.bindTable[bind], table.find(Custom.bindTable[bind], input)) --remove all references to input in bindTable
 		end
 	else
 		warn('Bind "' .. tostring(bind) .. '" does not exist or has not been created yet')
@@ -163,7 +177,7 @@ local function DelKeyBindLogic (bind, input)
 	end
 end
 
-function RoKeys.DelKeyBind (bind, input)
+function Custom.DelKeyBind (bind, input)
 	if bind == nil then --if bind is nil then delete all instances mentioned in input
 		DelKeyLogic(input)
 	elseif input == nil then --same thing but swap bind and input
@@ -179,7 +193,7 @@ function RoKeys.DelKeyBind (bind, input)
 			warn('BindName "' .. tostring(bind) .. '" provided not String or Table, when unbinding multiple keybinds please put them in a table... ex: {"Interact", "LeanRight"}')
 		end
 	end
-	--print(RoKeys.inputTable, RoKeys.bindTable)
+	--print(Custom.inputTable, Custom.bindTable)
 end
 
 --for these I need to add support for more stuff maybe
@@ -190,7 +204,7 @@ end
 local function InputOff (bind, input)
 	bind[1] = false --makes the bind false
 	for j = 3, table.getn(bind) do --if so...
-		if RoKeys.inputTable[bind[j]] ~= input and RoKeys.inputTable[bind[j]][1] == true then --...check if any of them is true
+		if Custom.inputTable[bind[j]] ~= input and Custom.inputTable[bind[j]][1] == true then --...check if any of them is true
 			bind[1] = true --then set the bind back to true because it still has true inputs
 		end --also checks to make sure it does not use the input to decide this cus otherwise toggling would not work
 	end
@@ -200,13 +214,13 @@ end
 local function inputBegan (input)
 	input[1] = true --makes the input true
 	for i = 3, table.getn(input) do
-		if RoKeys.bindTable[input[i]][2] == false then --if toggle is off
-			InputOn(RoKeys.bindTable[input[i]], input)
+		if Custom.bindTable[input[i]][2] == false then --if toggle is off
+			InputOn(Custom.bindTable[input[i]], input)
 		else
-			if RoKeys.bindTable[input[i]][1] == false then --bind toggling behavior
-				InputOn(RoKeys.bindTable[input[i]], input)
+			if Custom.bindTable[input[i]][1] == false then --bind toggling behavior
+				InputOn(Custom.bindTable[input[i]], input)
 			else
-				InputOff(RoKeys.bindTable[input[i]], input)
+				InputOff(Custom.bindTable[input[i]], input)
 			end
 		end
 	end
@@ -215,33 +229,33 @@ end
 local function inputEnded (input)
 	input[1] = false --make the input false
 	for i = 3, table.getn(input) do --runs the following for every bind related to the input
-		if RoKeys.bindTable[input[i]][2] == false then --checks to make sure the bind is not toggleable
-			InputOff(RoKeys.bindTable[input[i]])
+		if Custom.bindTable[input[i]][2] == false then --checks to make sure the bind is not toggleable
+			InputOff(Custom.bindTable[input[i]])
 		end
 	end
 end
 
 uip.InputBegan:Connect(function (input)
-	if RoKeys.inputTable[input.KeyCode] ~= nil then --just checks if the key exists so it does not error for non-existant values
-		if RoKeys.inputTable[input.KeyCode][2] == false then --if toggle is off
-			inputBegan(RoKeys.inputTable[input.KeyCode])
+	if Custom.inputTable[input.KeyCode] ~= nil then --just checks if the key exists so it does not error for non-existant values
+		if Custom.inputTable[input.KeyCode][2] == false then --if toggle is off
+			inputBegan(Custom.inputTable[input.KeyCode])
 		else
-			if RoKeys.inputTable[input.KeyCode][1] == false then --input toggling behavior
-				inputBegan(RoKeys.inputTable[input.KeyCode])
+			if Custom.inputTable[input.KeyCode][1] == false then --input toggling behavior
+				inputBegan(Custom.inputTable[input.KeyCode])
 			else
-				inputEnded(RoKeys.inputTable[input.KeyCode])
+				inputEnded(Custom.inputTable[input.KeyCode])
 			end
 		end
 	end
 end)
 
 uip.InputEnded:Connect(function (input)
-	if RoKeys.inputTable[input.KeyCode] ~= nil then --just checks if the key exists so it does not error for non-existant values
-		if RoKeys.inputTable[input.KeyCode][2] == false then --if toggle is off
-			inputEnded(RoKeys.inputTable[input.KeyCode])
+	if Custom.inputTable[input.KeyCode] ~= nil then --just checks if the key exists so it does not error for non-existant values
+		if Custom.inputTable[input.KeyCode][2] == false then --if toggle is off
+			inputEnded(Custom.inputTable[input.KeyCode])
 		end
 	end
 end)
 
 
-return RoKeys
+return Custom
