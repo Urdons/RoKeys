@@ -106,7 +106,7 @@ DelKeyBind(nil, Enum.KeyCode.X) --notice the bind is nil
 
 ### Reading Keybinds
 
-Reading Keybinds is a lot simpler as compared to *adding* or *removing* them. To read keybinds you are provided *two* functions; `BindState` and `InputState`, in each all you need to do is provide either the `bind` or `input` *(depening on which function you are using)* and the function will **return** a `boolean` of wether the `bind`/`input` is **off** or **on**.
+Reading Keybinds is a lot simpler as compared to *adding* or *removing* them. To read keybinds you are provided *two* functions; `BindState` and `InputState`, in each all you need to do is provide either the `bind` or `input` *(depending on which function you are using)* and the function will **return** a `boolean` of wether the `bind`/`input` is **off** or **on**.
 ```lua
 if BindState("example") then --if bind "example" is on...
   --do something
