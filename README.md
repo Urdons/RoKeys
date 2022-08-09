@@ -141,7 +141,7 @@ inputTable { --same layout as bindTable
 ```
 I strongly recommend using the built in functions to add and remove Keybinds. this section is for if you want to be able to read more data or have a better understanding of how it is stored
 
-### Changing the code
+## Changing the code
 
 **BEFORE CHANGING THE CODE PLEASE READ THE TERMS OF USE**
 
