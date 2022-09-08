@@ -18,7 +18,7 @@ On this page you will find sections labeled as follows: <br>
 
 ## Terms of Use
 
-### By using this project you Agree to these terms and the terms of the official licesing. <br>
+### By using this project you Agree to these terms and the terms of the official licensing. <br>
 
 When using **RoKeys** in your game, please give credit back to this project, exposing this project to people who may need it is a big goal of mine and I hope that those of you who use it can abide by this rule. <br>
 **Official Branding can be found in the folder labeled `Branding`**.
