@@ -11,28 +11,13 @@ Links:
 - **Roblox**: *https://www.roblox.com/library/10263313095/RoKeys*
 
 On this page you will find sections labeled as follows: <br>
-- **Terms of Use**
 - **Installation**, <br>
 - **Basic Use**, <br>
 - **Advanced Use,** <br>
 - **FAQ,** and <br>
 - **Licensing** <br>
 
-## Terms of Use
-
-### By using this project you Agree to these terms and the terms of the official licensing. <br>
-
-When using **RoKeys** in your game, please give credit back to this project, exposing this project to people who may need it is a big goal of mine and I hope that those of you who use it can abide by this rule. <br>
-**Official Branding can be found in the folder labeled `Branding`**.
-
-When **branching off** of this project, **redistributing** it, or making **your own distribution**, please reference back to this page. For those who create their own distribution, please provide evidence that there is an **original** change in the code from this project to yours, copying code is not tolerated unless otherwise given permission *(this applies to copying code from other distributions, make sure you have permission before reusing code)*.
-
-**Do not forget** to take note of the `licensing` file, these additional terms are layered on top of terms found in that file *(**Apache License 2.0**)* and are not directly affiliated to the original lisencing. **You should thoroughly read through those conditions before using this project**.
-> you can also find a *link* to the **Apache License 2.0** along with some other info in the section labeled **Licensing**
-
 ## Installation
-
-**BEFORE INSTALLING PLEASE READ THE TERMS OF USE**
 
 To **Install** all you need to do is download the *latest version* from the **Releases Page**. <br>
 The file to look for will look *something* like this: `RoKeysV1.lua`
@@ -150,7 +135,7 @@ I strongly recommend using the built in functions to add and remove Keybinds. th
 
 ## Changing the code
 
-**BEFORE CHANGING THE CODE PLEASE READ THE TERMS OF USE**
+**BEFORE CHANGING THE CODE PLEASE READ THE LICENSE**
 
 I made my best effort to comment as much as possible inside of my code and will incrementally be bringing some of that here, if you have any questions you can ask them on **Github Issues** *(may not respond very fast)* or **Discord** *(link found at start of the document)*. 
 > For frequently asked questions look in the following section (**FAQ**).
