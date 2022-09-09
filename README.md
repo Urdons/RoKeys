@@ -70,21 +70,21 @@ And now you are ready to take full advantage of **RoKeys**.
 To add a **keybind** use the function `AddKeyBind`. the function takes the name of a `bind` *(as a string)*, the `input` you want to assign to the bind *(as an EnumItem)*, and two `booleans` which determine wether then `bind` and `input` are *toggleable*.
 > as of v1 `Enum.KeyCode` is the only supported input type.
 ```lua
-AddKeyBind("example", Enum.KeyCode.X, true. false)
---the first boolean effects the bind while the second effects the input
+Add({ Bind = "example", Input = Enum.KeyCode.X, BindToggle = true. InputToggle = false })
+--because this is a dictionary it does not matter what order you provide values in
 ```
 This function can also be written where the `bind` and/or `input` are tables, containing both the `bind`/`input` and wether they are *toggleable* or not.
 ```lua
-AddKeyBind({"example", true}, {Enum.KeyCode.X, false}) --notice the surrounding {} brackets
+AddKeyBind({ Bind = {"example", true}, Input = {Enum.KeyCode.X, false} }) --notice the {} brackets surrounding the binds and inputs
 --this will execute the same as the previous example
 ```
 You can also add *multiple* `inputs`, `binds`, or both in **one** function!
 ```lua
-AddKeyBind("two inputs", {Enum.KeyCode.X, Enum.KeyCode.Y}) --one bind has two inputs
+AddKeyBind({ Bind = "two inputs", Input = {Enum.KeyCode.X, Enum.KeyCode.Y} }) --one bind has two inputs
 
-AddKeyBind({"bind 1", "bind 2"}, Enum.KeyCode.X) --two binds, each with one input
+AddKeyBind({ Bind = {"bind 1", "bind 2"}, Input = Enum.KeyCode.X }) --two binds, each with one input
 
-AddKeyBind({"two inputs 1", "two inputs 2"}, {Enum.KeyCode.X, Enum.KeyCode.Y}) --two binds, each with two inputs
+AddKeyBind({ Bind = {"two inputs 1", "two inputs 2"}, Input = {Enum.KeyCode.X, Enum.KeyCode.Y} }) --two binds, each with two inputs
 ```
 > **not limited to two for each**. you can also still provide `toggles` for each individual `bind` and `input`, any toggles provided in the `3rd` and `4th` slots will apply for any `bind` or `input` without a toggle behavior provided.
 
@@ -92,17 +92,17 @@ AddKeyBind({"two inputs 1", "two inputs 2"}, {Enum.KeyCode.X, Enum.KeyCode.Y}) -
 
 The function `DelKeyBind` takes the name of a `bind` *(as a string)* and an `input` *(as an EnumItem)*. The function will use the provided values to filter through the existing Keybinds and delete only the `input` for the provided `bind` and the `bind` for the provided `input`, essentially making a `bind` no longer usable with the provided `input`.
 ```lua
-DelKeyBind("example", Enum.KeyCode.X)
+DelKeyBind({ Bind = "example", Input = Enum.KeyCode.X })
 --the input "Enum.KeyCode.X" will no longer interact with the bind "example"
 ```
 > similarly to `AddKeyBind`, `DelKeyBind` supports deleting multiple `binds` and `inputs`, I reccomend being more careful however, as you could accidentally delete keybinds.
 
 You can also delete `inputs` or `binds` en-masse as shown below:
 ```lua
-DelKeyBind("example", nil) --notice the input is nil
+DelKeyBind({ Bind = "example" }) --notice you are not providing input
 --the bind "example" will be deleted in it's entirety
 
-DelKeyBind(nil, Enum.KeyCode.X) --notice the bind is nil
+DelKeyBind({ Input = Enum.KeyCode.X }) --notice you are not providing bind
 --the input Enum.KeyCode.X will be deleted in it's entirety
 ```
 
@@ -127,17 +127,22 @@ All data for **Keybinds** are stored in two tables, `bindTable` and `inputTable`
 ```lua
 bindTable {
   bindName { --the name of the bind, depending on how many binds you have there will be that many of these
-    boolean, --wether it is on or off
-    boolean, --wether toggle is on
-    input --reference(s) to it's input(s), multiple may be listed here
+    Value = boolean, --wether it is on or off
+    Toggle = boolean, --wether toggle is on
+    Refs { --reference(s) to it's input(s)
+      InputName, --names of the input(s)
+      ...
+    }
   }
 }
 
 inputTable { --same layout as bindTable
   input { --this will likely say token followed by a string of numbers, do not worry as it is just a side effect of using EnumItems
-    boolean,
-    boolean,
-    bindName --like bindTable, multiple may be listed here
+    Value = boolean,
+    Toggle = boolean,
+    Refs {
+      BindName
+    }
   }
 }
 ```
