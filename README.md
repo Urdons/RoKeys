@@ -21,6 +21,7 @@ On this page you will find sections labeled as follows: <br>
 
 To **Install** all you need to do is download the *latest version* from the **Releases Page**. <br>
 The file to look for will look *something* like this: `RoKeysV1.lua`
+> if using an older version: the documentation can be found in the source files on the download page
 
 Once you've downloaded the file to your *prefered destination* all you have to do is make a **Roblox project** <br>
 Then *(assuming you know how to make a new project)*, in **Roblox Studio** navigate to the `View` tab as seen at the *top* of the window. <br>
