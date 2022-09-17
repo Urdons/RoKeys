@@ -162,32 +162,12 @@ function Custom.DelKeyBind (b, i) --DEPRECATED FUNCTION
 end
 
 --stuff for detecting inputs
-
 uip.InputBegan:Connect(function (input)
-	if Custom.InputTable[input] then --make sure it exists
-		Custom.InputTable[input].Value = true
-		--set all related binds to true
-		for i, bind in ipairs(Custom.InputTable[input].Refs) do
-			Custom.BindTable[bind].Value = true
-		end
-	end
+	
 end)
 
 uip.InputEnded:Connect(function (input)
-	if Custom.InputTable[input] then --make sure it exists
-		Custom.InputTable[input].Value = false
-		--set all related binds to true
-		for i, foo in ipairs(Custom.InputTable[input].Refs) do
-			Custom.BindTable[foo].Value = false
-			--does a second check to see if any of the bind's inputs are true
-			for j, bar in ipairs(Custom.BindTable[foo].Refs) do
-				--if the input is true then set the bind back to true
-				if Custom.InputTable[bar].Value == true then
-					Custom.BindTable[foo].Value = true
-				end
-			end
-		end
-	end
+	
 end)
 
 function Custom.Pause (args)
