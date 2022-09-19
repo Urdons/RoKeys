@@ -162,11 +162,97 @@ function Custom.DelKeyBind (b, i) --DEPRECATED FUNCTION
 end
 
 --stuff for detecting inputs
-uip.InputBegan:Connect(function (input)
-	
+uip.InputBegan:Connect(function (i)
+	local function BindToggle (input)
+		for i, b in ipairs(input.Refs) do
+			local bind = Custom.BindTable[b]
+			
+			if bind.Toggle then
+				--toggle is true
+				if bind.Value then
+					--toggle off
+					bind.Value = false
+					script.BindEnded:Fire(b)
+				else
+					--toggle on
+					bind.Value = true
+					script.BindBegan:Fire(b)
+				end
+			else
+				--toggle is false
+				if not bind.Value then
+					bind.Value = true
+					script.BindBegan:Fire(b)
+				end
+			end
+		end
+	end
+	--start
+	if Custom.InputTable[i.KeyCode] then
+		local input = Custom.InputTable[i.KeyCode]
+		
+		if input.Toggle then
+			--toggle is true
+			if input.Value then
+				--toggle off
+				input.Value = false
+				script.InputEnded:Fire(i.KeyCode)
+				BindToggle(input)
+			else
+				--toggle on
+				input.Value = true
+				script.InputBegan:Fire(i.KeyCode)
+				BindToggle(input)
+			end
+		else
+			--toggle is false
+			if not input.Value then
+				input.Value = true
+				script.InputBegan:Fire(i.KeyCode)
+				BindToggle(input)
+			end
+		end
+	end
 end)
 
-uip.InputEnded:Connect(function (input)
+uip.InputEnded:Connect(function (i)
+	if Custom.InputTable[i.KeyCode] then
+		local input = Custom.InputTable[i.KeyCode]
+		
+		if not input.Toggle then
+			--toggle is false
+			if input.Value then
+				input.Value = false
+				script.InputEnded:Fire(i.KeyCode)
+				for j, b in ipairs(input.Refs) do
+					local bind = Custom.BindTable[b]
+					
+					if not bind.Toggle then
+						--toggle is false
+						if bind.Value then
+							bind.Value = false
+							--for binds you must make a second check to make sure none of the inputs are true
+							for k, foo in ipairs(bind.Refs) do
+								local bar = Custom.InputTable[foo]
+								--if one is true then set the bind back to true
+								if bar.Value then
+									bind.Value = true
+								end
+							end
+							--then check if the bind is still false
+							if not bind.Value then
+								script.BindEnded:Fire(b)
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	--if input toggle false
+			
+		--if bind false
+	
 	
 end)
 
