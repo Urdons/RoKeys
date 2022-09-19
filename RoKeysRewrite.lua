@@ -249,11 +249,6 @@ uip.InputEnded:Connect(function (i)
 			end
 		end
 	end
-	--if input toggle false
-			
-		--if bind false
-	
-	
 end)
 
 function Custom.Pause (args)
