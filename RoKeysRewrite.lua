@@ -69,29 +69,29 @@ function Custom.InputState (input)
 end
 
 --The end all be all of reducing repeated code
-local function Decode (item)
+function Custom.Format (item)
 	local outcome = {}
 
-	local function insert (foo)
+	local function insert (item)
 		table.insert(outcome, {
 			--we need to make sure the name exists (if not error)
-			Name = if foo["Name"] then foo["Name"] else warn(err(10)),
+			Name = if item["Name"] then item["Name"] else warn(err(10)),
 			--these other values are not as important
-			Toggle = if foo["Toggle"] then foo["Toggle"] else nil,
-			Value = if foo["Value"] then foo["Value"] else nil,
+			Toggle = if item["Toggle"] then item["Toggle"] else nil,
+			Value = if item["Value"] then item["Value"] else nil,
 		})
 	end
 
 	if typeof(item) == "table" then
 		if item[1] then --tells us if the item is an array or a dictonary
 			--array (which means they are probobly providing multiple items)
-			for i, foo in ipairs(item) do
-				if typeof(foo) == table then
+			for i, tem in ipairs(item) do
+				if typeof(tem) == table then
 					--treats foo as a table (TODO: assumes it's a dictonary so should probobly error if it's not)
-					insert(foo)
+					insert(tem)
 				else
 					--treats foo as just one value so sets Name
-					insert({Name = foo})
+					insert({Name = tem})
 				end
 			end
 		else
@@ -106,39 +106,46 @@ local function Decode (item)
 	return outcome
 end
 
+--[[
+type BindA = {Name: string | EnumItem}
+type BindB = {{Name: string | EnumItem, Toggle: boolean?, Value: boolean?}}
+]]
+
 --The function for adding keybinds
 function Custom.New (args)
-	local input = args["Input"] or args["Inputs"] or nil
-	local bind = args["Bind"] or args["Binds"] or nil
-	local inputToggle = args["InputToggle"] or false
-	local bindToggle = args["BindToggle"] or false
-	local inputValue = args["InputValue"] or false
-	local bindValue = args["BindValue"] or false
+	local input = args["Input"] or nil
+	local bind = args["Bind"] or nil
 	
-	local i = if input then Decode(input) else {}
-	local b = if bind then Decode(bind) else {}
+	local i = if input then Custom.Format(input) else {}
+	local b = if bind then Custom.Format(bind) else {}
 	
 	--these two for loops just set up the binds/inputs
-	for j, foo in ipairs(b) do
-		Custom.BindTable[foo["Name"]] = {
-			Value = foo["Value"] or bindValue or false,
-			Toggle = foo["Toggle"] or bindToggle or false,
-			Refs = {}
-		}
+	for j, ibind in ipairs(b) do
+		if not Custom.BindTable[ibind["Name"]] then
+			--if the bind does not already exist then create it
+			Custom.BindTable[ibind["Name"]] = {
+				Value = ibind["Value"] or args["BindValue"] or false,
+				Toggle = ibind["Toggle"] or args["BindToggle"] or false,
+				Refs = {}
+			}
+		end
 		--insert all references to inputs
-		for k, bar in ipairs(i) do
-			table.insert(Custom.BindTable[foo["Name"]].Refs, bar["Name"])
+		for k, iinput in ipairs(i) do
+			table.insert(Custom.BindTable[ibind["Name"]].Refs, iinput["Name"])
 		end
 	end
-	for j, foo in ipairs(i) do
-		Custom.InputTable[foo["Name"]] = {
-			Value = foo["Value"] or inputValue or false,
-			Toggle = foo["Toggle"] or inputToggle or false,
-			Refs = {}
-		}
+	for j, iinput in ipairs(i) do
+		if not Custom.InputTable[iinput["Name"]] then
+			--if the input does not already exist then create it
+			Custom.InputTable[iinput["Name"]] = {
+				Value = iinput["Value"] or args["InputValue"] or false,
+				Toggle = iinput["Toggle"] or args["InputToggle"] or false,
+				Refs = {}
+			}
+		end
 		--insert all references to binds
-		for k, bar in ipairs(b) do
-			table.insert(Custom.InputTable[foo["Name"]].Refs, bar["Name"])
+		for k, ibind in ipairs(b) do
+			table.insert(Custom.InputTable[iinput["Name"]].Refs, ibind["Name"])
 		end
 	end
 end
@@ -151,10 +158,18 @@ end
 
 --main funtion for removing keybinds
 function Custom.Remove (args)
-	local input = args["Input"] or args["Inputs"] or nil
-	local bind = args["Bind"] or args["Inputs"] or nil
+	local input = args["Input"] or nil
+	local bind = args["Bind"] or nil
+
+	local i = if input then Custom.Format(input) else {}
+	local b = if bind then Custom.Format(bind) else {}
 	
-	
+	for j, ibind in ipairs(b) do
+		Custom.BindTable[ibind["Name"]] = nil
+	end
+	for j, iinput in ipairs(b) do
+		Custom.InputTable[iinput["Name"]] = nil
+	end
 end
 
 function Custom.DelKeyBind (b, i) --DEPRECATED FUNCTION
@@ -163,10 +178,32 @@ end
 
 --stuff for detecting inputs
 uip.InputBegan:Connect(function (i)
-	local function BindToggle (input)
+	if Custom.InputTable[i.KeyCode] then
+		local input = Custom.InputTable[i.KeyCode]
+		
+		--input
+		if input.Toggle then
+			--toggle is true
+			if input.Value then
+				--toggle off
+				input.Value = false
+				script.InputEnded:Fire(i.KeyCode)
+			else
+				--toggle on
+				input.Value = true
+				script.InputBegan:Fire(i.KeyCode)
+			end
+		else
+			--toggle is false
+			if not input.Value then
+				input.Value = true
+				script.InputBegan:Fire(i.KeyCode)
+			end
+		end
+		--bind
 		for i, b in ipairs(input.Refs) do
 			local bind = Custom.BindTable[b]
-			
+
 			if bind.Toggle then
 				--toggle is true
 				if bind.Value then
@@ -184,32 +221,6 @@ uip.InputBegan:Connect(function (i)
 					bind.Value = true
 					script.BindBegan:Fire(b)
 				end
-			end
-		end
-	end
-	--start
-	if Custom.InputTable[i.KeyCode] then
-		local input = Custom.InputTable[i.KeyCode]
-		
-		if input.Toggle then
-			--toggle is true
-			if input.Value then
-				--toggle off
-				input.Value = false
-				script.InputEnded:Fire(i.KeyCode)
-				BindToggle(input)
-			else
-				--toggle on
-				input.Value = true
-				script.InputBegan:Fire(i.KeyCode)
-				BindToggle(input)
-			end
-		else
-			--toggle is false
-			if not input.Value then
-				input.Value = true
-				script.InputBegan:Fire(i.KeyCode)
-				BindToggle(input)
 			end
 		end
 	end
