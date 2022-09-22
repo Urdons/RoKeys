@@ -1,4 +1,5 @@
 ## THIS BRANCH IS WORK IN PROGRESS: README MAY BE INACCURATE
+The Readme is currently very inconsistent as I am currently updating it to reflect the rewrite
 
 ![RoKeysIconFullTransparent](https://user-images.githubusercontent.com/56717172/179380379-839275a7-7558-4770-91a3-9f79baef7d1e.png)
 ![RoKeysTitleWhite](https://user-images.githubusercontent.com/56717172/179380393-f7eef77b-5d62-4598-9b62-4828f6aadb9e.png#gh-dark-mode-only)
@@ -54,26 +55,65 @@ And now you are ready to take full advantage of **RoKeys**.
 
 ### Adding keybinds
 
-To add a **keybind** use the function `AddKeyBind`. the function takes the name of a `bind` *(as a string)*, the `input` you want to assign to the bind *(as an EnumItem)*, and two `booleans` which determine wether then `bind` and `input` are *toggleable*.
-> as of v1 `Enum.KeyCode` is the only supported input type.
+To add a **KeyBind** use the function `Add`. the function takes the name of a `Bind` *(as a string)*, the `Input` you want to assign to the `Bind` *(as an EnumItem)*, and `BindToggle` and `InputToggle` *(as booleans)* which determine wether the bind and input should use a toggle behavior.
+> as of v2 `Enum.KeyCode` is the only supported input type.
 ```lua
-Add({ Bind = "example", Input = Enum.KeyCode.X, BindToggle = true. InputToggle = false })
+RoKeys.Add({ 
+  Bind = "example", 
+  Input = Enum.KeyCode.X, 
+  BindToggle = true. 
+  InputToggle = false 
+})
 --because this is a dictionary it does not matter what order you provide values in
 ```
-This function can also be written where the `bind` and/or `input` are tables, containing both the `bind`/`input` and wether they are *toggleable* or not.
+This function can also be written where the `Bind`/`Input` are tables, containing both the `Bind`/`Input`'s `Name` and wether they use a toggle behavior.
 ```lua
-AddKeyBind({ Bind = {"example", true}, Input = {Enum.KeyCode.X, false} }) --notice the {} brackets surrounding the binds and inputs
---this will execute the same as the previous example
+RoKeys.Add({ 
+  Bind = {
+    Name = "example", 
+    Toggle = true
+  }, 
+  Input = {
+    Name = Enum.KeyCode.X, 
+    Toggle = false
+  } 
+  --notice the {} brackets surrounding the binds and inputs
+}) 
+--this does the same thing as the previous example
 ```
-You can also add *multiple* `inputs`, `binds`, or both in **one** function!
+You can also add *multiple* `Inputs`, `Binds`, or both in **one** function!
 ```lua
-AddKeyBind({ Bind = "two inputs", Input = {Enum.KeyCode.X, Enum.KeyCode.Y} }) --one bind has two inputs
+RoKeys.Add({ 
+  Bind = "two inputs", 
+  Input = {
+    Enum.KeyCode.X, 
+    Enum.KeyCode.Y
+  } 
+  --one bind has two inputs
+}) 
 
-AddKeyBind({ Bind = {"bind 1", "bind 2"}, Input = Enum.KeyCode.X }) --two binds, each with one input
+RoKeys.Add({ 
+  Bind = {
+    "bind 1", 
+    "bind 2"
+  }, 
+  Input = Enum.KeyCode.X 
+  --two binds, each with one input
+}) 
 
-AddKeyBind({ Bind = {"two inputs 1", "two inputs 2"}, Input = {Enum.KeyCode.X, Enum.KeyCode.Y} }) --two binds, each with two inputs
+RoKeys.Add({ 
+  Bind = {
+    "two inputs 1", 
+    "two inputs 2"
+  }, 
+  Input = {
+    Enum.KeyCode.X, 
+    Enum.KeyCode.Y
+  } 
+  --two binds, each with two inputs
+}) 
 ```
-> **not limited to two for each**. you can also still provide `toggles` for each individual `bind` and `input`, any toggles provided in the `3rd` and `4th` slots will apply for any `bind` or `input` without a toggle behavior provided.
+> **not limited to two for each**. you can also still provide `Toggle` for each individual `Bind` and `Input`, any toggles provided as `BindToggle` or `InputToggle` slots will apply for every `Bind` or `Input` without their own toggle provided.
 
 ### Removing keybinds
 
@@ -97,7 +137,7 @@ DelKeyBind({ Input = Enum.KeyCode.X }) --notice you are not providing bind
 
 Reading Keybinds is a lot simpler as compared to *adding* or *removing* them. To read keybinds you are provided *two* functions; `BindState` and `InputState`, in each all you need to do is provide either the `bind` or `input` *(depending on which function you are using)* and the function will **return** a `boolean` of wether the `bind`/`input` is **off** or **on**.
 ```lua
-if BindState("example") then --if bind "example" is on...
+if Rokeys:BindState("example") then --if bind "example" is on...
   --do something
 end
 --notice the function is in an if statement, that is because it returns a boolean
