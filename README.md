@@ -117,30 +117,39 @@ RoKeys.Add({
 
 ### Removing keybinds
 
-The function `DelKeyBind` takes the name of a `bind` *(as a string)* and an `input` *(as an EnumItem)*. The function will use the provided values to filter through the existing Keybinds and delete only the `input` for the provided `bind` and the `bind` for the provided `input`, essentially making a `bind` no longer usable with the provided `input`.
+The function `Remove` takes the name of a `Bind` *(as a string)* and an `Input` *(as an EnumItem)*. The function will use the provided values to filter through the existing Keybinds and delete only the `Input` for the provided `Bind` and the `Bind` for the provided `Input`.
 ```lua
-DelKeyBind({ Bind = "example", Input = Enum.KeyCode.X })
---the input "Enum.KeyCode.X" will no longer interact with the bind "example"
+RoKeys.Remove({ 
+  Bind = "example", 
+  Input = Enum.KeyCode.X 
+})
+--the Input "Enum.KeyCode.X" and the Bind "example" will no longer interact
 ```
-> similarly to `AddKeyBind`, `DelKeyBind` supports deleting multiple `binds` and `inputs`, I reccomend being more careful however, as you could accidentally delete keybinds.
+> similarly to `Add`, `Remove` supports deleting multiple `Binds` and `Inputs`.
 
-You can also delete `inputs` or `binds` en-masse as shown below:
+You can also delete `Inputs` or `Binds` en-masse as shown below:
 ```lua
-DelKeyBind({ Bind = "example" }) --notice you are not providing input
---the bind "example" will be deleted in it's entirety
+RoKeys.Remove({ 
+  Bind = "example" 
+  --notice you are not providing input
+}) 
+--the Bind "example" will be deleted in it's entirety
 
-DelKeyBind({ Input = Enum.KeyCode.X }) --notice you are not providing bind
---the input Enum.KeyCode.X will be deleted in it's entirety
+RoKeys.Remove({ 
+  Input = Enum.KeyCode.X 
+  --notice you are not providing bind
+}) 
+--the Input Enum.KeyCode.X will be deleted in it's entirety
 ```
 
 ### Reading Keybinds
 
-Reading Keybinds is a lot simpler as compared to *adding* or *removing* them. To read keybinds you are provided *two* functions; `BindState` and `InputState`, in each all you need to do is provide either the `bind` or `input` *(depending on which function you are using)* and the function will **return** a `boolean` of wether the `bind`/`input` is **off** or **on**.
+Reading Keybinds is a lot simpler as compared to *Adding* or *Removing* them. To read keybinds you are provided *two* functions; `BindState` and `InputState`, in each all you need to do is provide either the `bind` or `input` *(depending on which function you are using)* and the function will **return** a `boolean` of wether the `Bind`/`Input` is **true** or **false**.
 ```lua
-if Rokeys:BindState("example") then --if bind "example" is on...
+if RoKeys:BindState("example") then --if bind "example" is on...
   --do something
 end
---notice the function is in an if statement, that is because it returns a boolean
+--notice the function is in an if statement
 ```
 > `InputState` has the same usage except reads from wether an input is on.
 
@@ -152,7 +161,7 @@ this section is for advanced users, ready to get their hands dirty and work with
 
 All data for **Keybinds** are stored in two tables, `bindTable` and `inputTable` *(both in the form of a dictionary)*. These two tables' formatting is as follows:
 ```lua
-bindTable {
+RoKeys.bindTable {
   bindName { --the name of the bind, depending on how many binds you have there will be that many of these
     Value = boolean, --wether it is on or off
     Toggle = boolean, --wether toggle is on
@@ -163,7 +172,7 @@ bindTable {
   }
 }
 
-inputTable { --same layout as bindTable
+RoKeys.inputTable { --same layout as bindTable
   input { --this will likely say token followed by a string of numbers, do not worry as it is just a side effect of using EnumItems
     Value = boolean,
     Toggle = boolean,
@@ -174,6 +183,25 @@ inputTable { --same layout as bindTable
 }
 ```
 I strongly recommend using the built in functions to add and remove Keybinds. this section is for if you want to be able to read more data or have a better understanding of how it is stored
+
+### The Format Function
+
+This `Format` Function Takes what you would use as the `Input` or the `Bind` in the `Add` function and returns it as a standard format
+```lua
+print(Rokeys.Format("example"))
+```
+output:
+```lua
+{
+  { 
+    Name = "example" 
+    Toggle = nil
+    Value = nil
+    --because Toggle and Value are nil they will not actually show up
+  }
+  ...
+}
+```
 
 ## Changing the code
 
