@@ -85,13 +85,13 @@ function Custom.Format (item)
 	if typeof(item) == "table" then
 		if item[1] then --tells us if the item is an array or a dictonary
 			--array (which means they are probobly providing multiple items)
-			for i, tem in ipairs(item) do
-				if typeof(tem) == table then
+			for i, iitem in ipairs(item) do
+				if typeof(iitem) == table then
 					--treats foo as a table (TODO: assumes it's a dictonary so should probobly error if it's not)
-					insert(tem)
+					insert(iitem)
 				else
 					--treats foo as just one value so sets Name
-					insert({Name = tem})
+					insert({Name = iitem})
 				end
 			end
 		else
@@ -165,10 +165,23 @@ function Custom.Remove (args)
 	local b = if bind then Custom.Format(bind) else {}
 	
 	for j, ibind in ipairs(b) do
-		Custom.BindTable[ibind["Name"]] = nil
+		if bind then
+			for k, iinput in ipairs(Custom.BindTable[ibind["Name"]].Refs) do
+				print(k)
+				--remove references to bind in it's inputs
+				table.remove(Custom.InputTable[iinput].Refs, table.find(Custom.InputTable[iinput].Refs, ibind["Name"]))
+			end
+			Custom.BindTable[ibind["Name"]] = nil
+		end
 	end
 	for j, iinput in ipairs(b) do
-		Custom.InputTable[iinput["Name"]] = nil
+		if input then
+			for k, ibind in ipairs(Custom.InputTable[iinput["Name"]].Refs) do
+				--remove references to input in it's binds
+				table.remove(Custom.BindTable[ibind].Refs, table.find(Custom.BindTable[ibind].Refs, iinput["Name"]))
+			end
+			Custom.InputTable[iinput["Name"]] = nil
+		end
 	end
 end
 
