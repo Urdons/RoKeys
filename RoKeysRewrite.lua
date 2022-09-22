@@ -165,22 +165,32 @@ function Custom.Remove (args)
 	local b = if bind then Custom.Format(bind) else {}
 	
 	for j, ibind in ipairs(b) do
-		if bind then
+		if not input then
 			for k, iinput in ipairs(Custom.BindTable[ibind["Name"]].Refs) do
 				print(k)
 				--remove references to bind in it's inputs
 				table.remove(Custom.InputTable[iinput].Refs, table.find(Custom.InputTable[iinput].Refs, ibind["Name"]))
 			end
 			Custom.BindTable[ibind["Name"]] = nil
+		else
+			--if an input is provided just remove any of the refs
+			for k, iinput in ipairs(i) do
+				table.remove(Custom.BindTable[ibind["Name"]].Refs, table.find(Custom.BindTable[ibind["Name"]].Refs, iinput["Name"]))
+			end
 		end
 	end
 	for j, iinput in ipairs(b) do
-		if input then
+		if not bind then
 			for k, ibind in ipairs(Custom.InputTable[iinput["Name"]].Refs) do
 				--remove references to input in it's binds
 				table.remove(Custom.BindTable[ibind].Refs, table.find(Custom.BindTable[ibind].Refs, iinput["Name"]))
 			end
 			Custom.InputTable[iinput["Name"]] = nil
+		else
+			--if an bind is provided just remove any of the refs
+			for k, ibind in ipairs(b) do
+				table.remove(Custom.InputTable[iinput["Name"]].Refs, table.find(Custom.InputTable[iinput["Name"]].Refs, ibind["Name"]))
+			end
 		end
 	end
 end
