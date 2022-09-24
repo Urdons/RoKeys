@@ -1,5 +1,6 @@
-## THIS BRANCH IS WORK IN PROGRESS: README MAY BE INACCURATE
-The Readme is currently very inconsistent as I am currently updating it to reflect the rewrite
+## THIS BRANCH IS WORK IN PROGRESS
+The Readme may be inaccurate to the current state of RoKeys
+UNSTABLE: MAY NOT WORK AS INTENDED
 
 ![RoKeysIconFullTransparent](https://user-images.githubusercontent.com/56717172/179380379-839275a7-7558-4770-91a3-9f79baef7d1e.png)
 ![RoKeysTitleWhite](https://user-images.githubusercontent.com/56717172/179380393-f7eef77b-5d62-4598-9b62-4828f6aadb9e.png#gh-dark-mode-only)
