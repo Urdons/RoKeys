@@ -127,10 +127,10 @@ function Custom.New (args)
 		if not Custom.BindTable[ibind.Name] then
 			--if the bind does not already exist then create it
 			Custom.BindTable[ibind.Name] = {
-				Value = ibind.Value or args["BindValue"] or false,
-				Toggle = ibind.Toggle or args["BindToggle"] or false,
-				Paused = ibind.Paused or args["BindPaused"] or false,
-				Refs = ibind.Refs or args["BindRefs"] or {},
+				Value = ibind.Value or args.Binds["Value"] or args["BindValue"] or false,
+				Toggle = ibind.Toggle or args.Binds["Toggle"] or args["BindToggle"] or false,
+				Paused = ibind.Paused or args.Binds["Paused"] or args["BindPaused"] or false,
+				Refs = ibind.Refs or args.Binds["Refs"] or args["BindRefs"] or {},
 			}
 			table.insert(bs, ibind.Name)
 		end
@@ -145,10 +145,10 @@ function Custom.New (args)
 		if not Custom.InputTable[iinput.Name] then
 			--if the input does not already exist then create it
 			Custom.InputTable[iinput.Name] = {
-				Value = iinput.Value or args["InputValue"] or false,
-				Toggle = iinput.Toggle or args["InputToggle"] or false,
-				Paused = iinput.Paused or args["InputPaused"] or false,
-				Refs = iinput.Refs or args["InputRefs"] or {}
+				Value = iinput.Value or args.Inputs["Value"] or args["InputValue"] or false,
+				Toggle = iinput.Toggle or args.Inputs["Toggle"] or args["InputToggle"] or false,
+				Paused = iinput.Paused or args.Inputs["Paused"] or args["InputPaused"] or false,
+				Refs = iinput.Refs or args.Inputs["Refs"] or args["InputRefs"] or {}
 			}
 			table.insert(is, iinput.Name)
 		end
@@ -298,13 +298,14 @@ uip.InputBegan:Connect(function (i)
 end)
 
 uip.InputEnded:Connect(function (i)
-	if Custom.InputTable[i.KeyCode] and not Custom.InputTable[i.KeyCode].Paused then
-		local input = Custom.InputTable[i.KeyCode]
+	i = i.KeyCode
+	if Custom.InputTable[i] and not Custom.InputTable[i].Paused then
+		local input = Custom.InputTable[i]
 		
 		if not input.Toggle and input.Value then
 			--toggle is false and the input's Value is true
 			input.Value = false
-			script.InputEnded:Fire(i.KeyCode)
+			script.InputEnded:Fire(i)
 			for j, b in ipairs(input.Refs) do
 				local bind = Custom.BindTable[b]
 				
@@ -312,10 +313,9 @@ uip.InputEnded:Connect(function (i)
 					--toggle is false and the bind's Value is true
 					bind.Value = false
 					--for binds you must make a second check to make sure none of the inputs are true
-					for k, foo in ipairs(bind.Refs) do
-						local bar = Custom.InputTable[foo]
+					for k, ref in ipairs(bind.Refs) do
 						--if one is true then set the bind back to true
-						if bar.Value then
+						if Custom.InputTable[ref].Value then
 							bind.Value = true
 						end
 					end
