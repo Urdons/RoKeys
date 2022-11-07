@@ -12,250 +12,347 @@ Licensed under the Apache License, Version 2.0 (the "License");
    limitations under the License.
 ]]
 
-local Custom = {}
-
 local uip = game:GetService("UserInputService")
 
-Custom.inputTable = {}
-Custom.bindTable = {}
+local Custom = {}
+
+Custom.TagTable = {}
+
+Custom.InputTable = {}
+Custom.BindTable = {}
+
+Custom.InputBegan = script.InputBegan.Event
+Custom.InputEnded = script.InputEnded.Event
+Custom.BindBegan = script.BindBegan.Event
+Custom.BindEnded = script.BindEnded.Event
+
+local function err (num)
+	--Depricated warnings
+	if num == 00 then
+		return "THIS FUNCTION IS DEPRICATED | INSTEAD USE:"
+	end
+	--Add/Remove
+	if num == 10 then
+		return "[Name] not provided"
+	end
+	--Get
+	if num == 20 then
+		return "Bind does not exist:"
+	end
+	if num == 21 then
+		return "Input does not exist:"
+	end
+end
 
 --functions that return the value of a keybind
-function Custom.BindState (bind)
-	if Custom.bindTable[bind] ~= nil then --check to make sure the bind exists
-		return Custom.bindTable[bind][1]
+function Custom:GetBindState (bind)
+	if Custom.BindTable[bind] ~= nil then --check to make sure the bind exists
+		return Custom.BindTable[bind].Value
 	else
-		warn('Bind "' .. tostring(bind) .. '" does not exist or has not been created yet')
+		warn(err(20) .. tostring(bind))
 	end
+end
+
+function Custom:GetInputState (input)
+	if Custom.InputTable[input] ~= nil then --check to make sure the input exists
+		return Custom.InputTable[input].Value
+	else
+		warn(err(21) .. tostring(input))
+	end
+end
+
+--DEPRECATED FUNCTIONS
+function Custom.BindState (bind)
+	warn(err(00) .. ":GetBindState")
 end
 
 function Custom.InputState (input)
-	if Custom.inputTable[input] ~= nil then --check to make sure the input exists
-		return Custom.inputTable[input][1]
-	else
-		warn('Input "' .. tostring(input) .. '" does not exist or has not been created yet')
-	end
+	warn(err(00) .. ":GetInputState")
 end
 
---the functions for adding a KeyBinds
-local function addKey (input, toggle, bind)
-	if Custom.inputTable[input] == nil then --check if the input exists
-		Custom.inputTable[input] = {false, toggle}
-	end
-	table.insert(Custom.inputTable[input], bind) --insert references to eachother
-	table.insert(Custom.bindTable[bind], input)
-end
+--The end all be all of reducing repeated code
+function Custom.Format (item)
+	local outcome = {}
 
-local function addBind (bind, toggle)
-	if Custom.bindTable[bind] == nil then --checks if the bind exists
-		Custom.bindTable[bind] = {false, toggle}
+	local function insert (item)
+		table.insert(outcome, {
+			--we need to make sure the name exists (if not error)
+			Name = if item.Name then item.Name else warn(err(10)),
+			--these other values are not as important
+			Toggle = item.Toggle or nil,
+			Value = item.Value or nil,
+			Paused = item.Paused or nil,
+			Refs = item.Refs or nil,
+		})
 	end
-end
 
-local function addKeyLogic (input, bind, toggle)
-	if typeof(input) == "EnumItem" then --check if the key variable is an enum
-		addKey(input, toggle, bind)
-	elseif typeof(input) == "table" then
-		for j, jInput in ipairs(input) do --if it is a table then set the values of all the inputs
-			if typeof(jInput) == "EnumItem" then --checks if it provides if it's a table inside of a table
-				if typeof(input[2]) == "EnumItem" then --deals with an edge case of {input, toggle} being thought of as {input, input}
-					addKey(jInput, toggle, bind)
-				elseif typeof(input[2]) == "boolean" then
-					addKey(jInput, input[2], bind)
+	if typeof(item) == "table" then
+		if item[1] then --tells us if the item is an array or a dictonary
+			--array (which means they are probobly providing multiple items)
+			for i, iitem in ipairs(item) do
+				if typeof(iitem) == "table" then
+					--treats iitem as a table (TODO: assumes it's a dictonary so should probobly error if it's not)
+					insert(iitem)
 				else
-					warn('Input "' .. tostring(jInput) .. '" provided not EnumItem or Table, when binding multiple inputs or applying toggles please put them in a table... ex: {{Enum.KeyCode.X, true}, {Enum.KeyCode.Y, false}}')
+					--treats iitem as just one value so sets Name
+					insert({Name = iitem})
 				end
-			elseif typeof(jInput) == "table" then
-				addKey(jInput[1], jInput[2], bind)
-			else
-				warn('Input "' .. tostring(jInput) .. '" provided not EnumItem or Table, when binding multiple inputs or applying toggles please put them in a table... ex: {{Enum.KeyCode.X, true}, {Enum.KeyCode.Y, false}}')
 			end
+		else
+			--dictonary (which they are probobly providing more than just the name)
+			insert(item)
 		end
 	else
-		warn('Input "' .. tostring(input) .. '" provided not EnumItem or Table, when binding multiple inputs or applying toggles please put them in a table... ex: {Enum.KeyCode.X, Enum.KeyCode.Y}')
+		--item is just one value
+		insert({Name = item})
 	end
+	
+	return outcome
 end
---main function for adding keybinds
-function Custom.addKeyBind (bind, input, bToggle, iToggle)
-	if bToggle == nil then --defaults for mass toggle
-		bToggle = false
-	end
-	if iToggle == nil then
-		iToggle = false
-	end
-	if typeof(bind) == "string" then --determines wether it is making one key or multiple
-		addBind(bind, bToggle)
-		addKeyLogic(input, bind, iToggle)
-	elseif typeof(bind) == "table" then
-		for i, iBind in ipairs(bind) do --iterates through the multiple keys it needs to make
-			if typeof(iBind) == "string" then
-				if typeof(bind[2]) == "string" then
-					addBind(iBind, bToggle)
-				elseif typeof(bind[2]) == "boolean" then
-					addBind(iBind, bind[2])
-				else
-					warn('BindName "' .. tostring(iBind) .. '" provided not String or Table, when creating multiple binds or applying toggles please put them in a table... ex: {{"Interact", false}, {"LeanRight", true}}')
-				end
-				addKeyLogic(input, iBind, iToggle)
-			elseif typeof(iBind) == "table" then
-				addBind(iBind[1], iBind[2])
-				addKeyLogic(input, iBind[1], iToggle)
-			else
-				warn('BindName "' .. tostring(iBind) .. '" provided not String or Table, when creating multiple binds or applying toggles please put them in a table... ex: {{"Interact", false}, {"LeanRight", true}}')
+
+--The function for adding keybinds
+function Custom.New (args)
+	local inputs = args["Inputs"] or nil --turn these into errors when nil
+	local binds = args["Binds"] or nil
+	
+	local i = if inputs then Custom.Format(inputs) else {}
+	local b = if binds then Custom.Format(binds) else {}
+	--collects the names of all the keybinds as they are created and returns them
+	local bs = {}
+	local is = {}
+	
+	--these two for loops just set up the binds/inputs
+	for j, ibind in ipairs(b) do
+		if not Custom.BindTable[ibind.Name] then
+			--if the bind does not already exist then create it
+			Custom.BindTable[ibind.Name] = {
+				Value = ibind.Value or args.Binds["Value"] or args["BindValue"] or false,
+				Toggle = ibind.Toggle or args.Binds["Toggle"] or args["BindToggle"] or false,
+				Paused = ibind.Paused or args.Binds["Paused"] or args["BindPaused"] or false,
+				Refs = ibind.Refs or args.Binds["Refs"] or args["BindRefs"] or {},
+			}
+			table.insert(bs, ibind.Name)
+		end
+		--insert all references to inputs
+		for k, iinput in ipairs(i) do
+			if not table.find(Custom.BindTable[ibind.Name].Refs, iinput.Name) then
+				table.insert(Custom.BindTable[ibind.Name].Refs, iinput.Name)
 			end
 		end
-	else
-		warn('BindName "' .. tostring(bind) .. '" provided not String or Table, when creating multiple binds or applying toggles please put them in a table... ex: {"Interact", "LeanRight"}')
 	end
+	for j, iinput in ipairs(i) do
+		if not Custom.InputTable[iinput.Name] then
+			--if the input does not already exist then create it
+			Custom.InputTable[iinput.Name] = {
+				Value = iinput.Value or args.Inputs["Value"] or args["InputValue"] or false,
+				Toggle = iinput.Toggle or args.Inputs["Toggle"] or args["InputToggle"] or false,
+				Paused = iinput.Paused or args.Inputs["Paused"] or args["InputPaused"] or false,
+				Refs = iinput.Refs or args.Inputs["Refs"] or args["InputRefs"] or {}
+			}
+			table.insert(is, iinput.Name)
+		end
+		--insert all references to binds
+		for k, ibind in ipairs(b) do
+			if not table.find(Custom.InputTable[iinput.Name].Refs, ibind.Name) then
+				table.insert(Custom.InputTable[iinput.Name].Refs, ibind.Name)
+			end
+		end
+	end
+	
+	return bs, is
+end
+
+function Custom.addKeyBind (b, i, bt, it) --DEPRECATED FUNCTION
+	warn("'RoKeys.addKeyBind' IS DEPRECATED, USE 'RoKeys.New' INSTEAD")
 end
 
 --functions for removing keybinds
-local function DelKey (input, bind) --deleting keys
-	if Custom.inputTable[input] ~= nil then --checks to make sure the input exists
-		if bind == nil then --determines what behavior to use, to delete all instances or to delete a filtered ammount of instances
-			for i = 3, table.getn(Custom.inputTable[input]) do --finds the input then deletes it
-				table.remove(Custom.bindTable[Custom.inputTable[input][i]], table.find(Custom.bindTable[Custom.inputTable[input][i]], input))
+
+--main funtion for removing keybinds
+function Custom.Remove (args)
+	local inputs = args["Inputs"] or nil
+	local binds = args["Binds"] or nil
+
+	local i = if inputs then Custom.Format(inputs) else {}
+	local b = if binds then Custom.Format(binds) else {}
+	--collects the names of all the keybinds as they are created and returns them
+	local bs = {}
+	local is = {}
+	
+	for j, ibind in ipairs(b) do
+		if not inputs then
+			for k, iinput in ipairs(Custom.BindTable[ibind.Name].Refs) do
+				--remove references to bind in it's inputs
+				table.remove(Custom.InputTable[iinput].Refs, table.find(Custom.InputTable[iinput].Refs, ibind.Name))
 			end
-			Custom.inputTable[input] = nil
+			Custom.BindTable[ibind.Name] = nil
 		else
-			table.remove(Custom.inputTable[input], table.find(Custom.inputTable[input], bind)) --remove all references to bind in inputTable
-		end
-	else
-		warn('Input "' .. tostring(input) .. '" does not exist or has not been created yet')
-	end
-end
-
-local function DelBind (bind, input) --deleting binds
-	if Custom.bindTable[bind] ~= nil then --checks to make sure the bind exists
-		if input == nil then --determines what behavior to use, to delete all instances or to delete a filtered ammount of instances
-			for i = 3, table.getn(Custom.bindTable[bind]) do --finds the bind then deletes it
-				table.remove(Custom.inputTable[Custom.bindTable[bind][i]], table.find(Custom.inputTable[Custom.bindTable[bind][i]], bind))
+			--if an input is provided just remove any of the refs
+			for k, iinput in ipairs(i) do
+				table.remove(Custom.BindTable[ibind.Name].Refs, table.find(Custom.BindTable[ibind.Name].Refs, iinput.Name))
 			end
-			Custom.bindTable[bind] = nil
-		else
-			table.remove(Custom.bindTable[bind], table.find(Custom.bindTable[bind], input)) --remove all references to input in bindTable
 		end
-	else
-		warn('Bind "' .. tostring(bind) .. '" does not exist or has not been created yet')
+		table.remove(bs, ibind.Name)
 	end
-end
-
-local function DelKeyLogic (input) --checks if it should delete multiple inputs or just one
-	if typeof(input) == "EnumItem" then
-		DelKey(input)
-	elseif typeof(input) == "table" then
-		for i, iInput in ipairs(input) do
-			DelKey(iInput)
-		end
-	else
-		warn('Input "' .. tostring(input) .. '" provided not EnumItem or Table, when deleting multiple inputs please put them in a table... ex: {Enum.KeyCode.X, Enum.KeyCode.Y}')
-	end
-end
-
-local function DelBindLogic (bind) --checks if it should delete multiple binds or just one
-	if typeof(bind) == "string" then
-		DelBind(bind)
-	elseif typeof(bind) == "table" then
-		for i, iBind in ipairs(bind) do
-			DelBind(iBind)
-		end
-	else
-		warn('BindName "' .. tostring(bind) .. '" provided not String or Table, when deleting binds please put them in a table... ex: {"Interact", "LeanRight"}')
-	end
-end
---this script deletes a specific keybind (an example being: Key W in Bind Up)
-local function DelKeyBindLogic (bind, input)
-	if typeof(input) == "EnumItem" then --determines if it should do it for multiple inputs
-		DelKey(input, bind)
-		DelBind(bind, input)
-	elseif typeof(input) == "table" then
-		for i, iInput in pairs(input) do --this does the same as before but now also does it for multiple inputs by iterating through them with a for loop
-			DelKey(iInput, bind)
-			DelBind(bind, iInput)
-		end
-	else
-		warn('Input "' .. tostring(input) .. '" provided not EnumItem or Table, when unbinding multiple inputs please put them in a table... ex: {Enum.KeyCode.X, Enum.KeyCode.Y}')
-	end
-end
-
-function Custom.DelKeyBind (bind, input)
-	if bind == nil then --if bind is nil then delete all instances mentioned in input
-		DelKeyLogic(input)
-	elseif input == nil then --same thing but swap bind and input
-		DelBindLogic(bind)
-	else --if neither are nil do the default behavior
-		if typeof(bind) == "string" then --determine wether multiple binds are given
-			DelKeyBindLogic(bind, input)
-		elseif typeof(bind) == "table" then
-			for i, iBind in ipairs(bind) do
-				DelKeyBindLogic(iBind, input)
+	for j, iinput in ipairs(b) do
+		if not binds then
+			for k, ibind in ipairs(Custom.InputTable[iinput.Name].Refs) do
+				--remove references to input in it's binds
+				table.remove(Custom.BindTable[ibind].Refs, table.find(Custom.BindTable[ibind].Refs, iinput.Name))
 			end
+			Custom.InputTable[iinput.Name] = nil
 		else
-			warn('BindName "' .. tostring(bind) .. '" provided not String or Table, when unbinding multiple keybinds please put them in a table... ex: {"Interact", "LeanRight"}')
+			--if an bind is provided just remove any of the refs
+			for k, ibind in ipairs(b) do
+				table.remove(Custom.InputTable[iinput.Name].Refs, table.find(Custom.InputTable[iinput.Name].Refs, ibind.Name))
+			end
 		end
+		table.remove(is, iinput.Name)
 	end
-	--print(Custom.inputTable, Custom.bindTable)
+	
+	return bs, is
 end
 
---for these I need to add support for more stuff maybe
-local function InputOn (bind, input)
-	bind[1] = true --make's all the input's binds true
+function Custom.Reset (scale : string)
+	if scale == "ALL" then
+		--resets everything
+		Custom.BindTable = {}
+		Custom.InputTable = {}
+	elseif scale == "BINDS" then
+		--resets only binds and their references
+		for i, bind in pairs(Custom.BindTable) do
+			for j, ref in ipairs(bind.Refs) do
+				table.remove(Custom.InputTable[ref].Refs, table.find(Custom.InputTable[ref].Refs, bind))
+			end
+		end
+		Custom.BindTable = {}
+	elseif scale == "INPUTS" then
+		--resets only binds and their references
+		for i, input in pairs(Custom.BindTable) do
+			for j, ref in ipairs(input.Refs) do
+				table.remove(Custom.BindTable[ref].Refs, table.find(Custom.BindTable[ref].Refs, input))
+			end
+		end
+		Custom.InputTable = {}
+	end
 end
 
-local function InputOff (bind, input)
-	bind[1] = false --makes the bind false
-	for j = 3, table.getn(bind) do --if so...
-		if Custom.inputTable[bind[j]] ~= input and Custom.inputTable[bind[j]][1] == true then --...check if any of them is true
-			bind[1] = true --then set the bind back to true because it still has true inputs
-		end --also checks to make sure it does not use the input to decide this cus otherwise toggling would not work
-	end
+function Custom.DelKeyBind (b, i) --DEPRECATED FUNCTION
+	warn("'RoKeys.DelKeyBind' IS DEPRECATED, USE 'RoKeys.Remove' INSTEAD")
 end
 
 --stuff for detecting inputs
-local function inputBegan (input)
-	input[1] = true --makes the input true
-	for i = 3, table.getn(input) do
-		if Custom.bindTable[input[i]][2] == false then --if toggle is off
-			InputOn(Custom.bindTable[input[i]], input)
-		else
-			if Custom.bindTable[input[i]][1] == false then --bind toggling behavior
-				InputOn(Custom.bindTable[input[i]], input)
+uip.InputBegan:Connect(function (i)
+	if Custom.InputTable[i.KeyCode] and not Custom.InputTable[i.KeyCode].Paused then
+		local input = Custom.InputTable[i.KeyCode]
+		
+		--input
+		if input.Toggle then
+			--toggle is true
+			if input.Value then
+				--toggle off
+				input.Value = false
+				script.InputEnded:Fire(i.KeyCode)
 			else
-				InputOff(Custom.bindTable[input[i]], input)
+				--toggle on
+				input.Value = true
+				script.InputBegan:Fire(i.KeyCode)
+			end
+		else
+			--toggle is false
+			if not input.Value then
+				input.Value = true
+				script.InputBegan:Fire(i.KeyCode)
 			end
 		end
-	end
-end
-
-local function inputEnded (input)
-	input[1] = false --make the input false
-	for i = 3, table.getn(input) do --runs the following for every bind related to the input
-		if Custom.bindTable[input[i]][2] == false then --checks to make sure the bind is not toggleable
-			InputOff(Custom.bindTable[input[i]])
-		end
-	end
-end
-
-uip.InputBegan:Connect(function (input)
-	if Custom.inputTable[input.KeyCode] ~= nil then --just checks if the key exists so it does not error for non-existant values
-		if Custom.inputTable[input.KeyCode][2] == false then --if toggle is off
-			inputBegan(Custom.inputTable[input.KeyCode])
-		else
-			if Custom.inputTable[input.KeyCode][1] == false then --input toggling behavior
-				inputBegan(Custom.inputTable[input.KeyCode])
-			else
-				inputEnded(Custom.inputTable[input.KeyCode])
+		--bind
+		for i, b in ipairs(input.Refs) do
+			local bind = Custom.BindTable[b]
+			
+			if not bind.Paused then
+				if bind.Toggle then
+					--toggle is true
+					if bind.Value then
+						--toggle off
+						bind.Value = false
+						script.BindEnded:Fire(b)
+					else
+						--toggle on
+						bind.Value = true
+						script.BindBegan:Fire(b)
+					end
+				else
+					--toggle is false
+					if not bind.Value then
+						bind.Value = true
+						script.BindBegan:Fire(b)
+					end
+				end
 			end
 		end
 	end
 end)
 
-uip.InputEnded:Connect(function (input)
-	if Custom.inputTable[input.KeyCode] ~= nil then --just checks if the key exists so it does not error for non-existant values
-		if Custom.inputTable[input.KeyCode][2] == false then --if toggle is off
-			inputEnded(Custom.inputTable[input.KeyCode])
+uip.InputEnded:Connect(function (i)
+	i = i.KeyCode
+	if Custom.InputTable[i] and not Custom.InputTable[i].Paused then
+		local input = Custom.InputTable[i]
+		
+		if not input.Toggle and input.Value then
+			--toggle is false and the input's Value is true
+			input.Value = false
+			script.InputEnded:Fire(i)
+			for j, b in ipairs(input.Refs) do
+				local bind = Custom.BindTable[b]
+				
+				if not bind.Toggle and bind.Value and not bind.Paused then
+					--toggle is false and the bind's Value is true
+					bind.Value = false
+					--for binds you must make a second check to make sure none of the inputs are true
+					for k, ref in ipairs(bind.Refs) do
+						--if one is true then set the bind back to true
+						if Custom.InputTable[ref].Value then
+							bind.Value = true
+						end
+					end
+					--then check if the bind is still false
+					if not bind.Value then
+						script.BindEnded:Fire(b)
+					end
+				end
+			end
 		end
 	end
 end)
 
+function Custom.Pause (args)	
+	local binds = args["Binds"] or {}
+	local inputs = args["Inputs"] or {}
+	--if they arent tables just make them tables
+	if typeof(binds) ~= "table" then binds = {binds} end
+	if typeof(inputs) ~= "table" then inputs = {inputs} end
+	
+	for i, bind in ipairs(binds) do
+		Custom.BindTable[bind].Paused = if Custom.BindTable[bind].Paused then false else true
+	end
+	for i, input in ipairs(inputs) do
+		Custom.BindTable[input].Paused = if Custom.BindTable[input].Paused then false else true
+	end
+end
+
+function Custom.Resume (args)	
+	local binds = args["Binds"] or {}
+	local inputs = args["Inputs"] or {}
+	--if they arent tables just make them tables
+	if typeof(binds) ~= "table" then binds = {binds} end
+	if typeof(inputs) ~= "table" then inputs = {inputs} end
+
+	for i, bind in ipairs(binds) do
+		Custom.BindTable[bind].Paused = true
+	end
+	for i, input in ipairs(inputs) do
+		Custom.BindTable[input].Paused = true
+	end
+end
 
 return Custom
