@@ -154,7 +154,7 @@ end
 ```
 > `InputState` has the same usage except reads from wether an input is on.
 
-##Pausing and Resuming Keybinds
+## Pausing and Resuming Keybinds
 
 Pausing Keybinds is about the easiest thing you can do, provide the `Binds` and `Inputs` you want to pause/resume and your comand will be upheld
 ```lua
@@ -164,7 +164,7 @@ Rokeys.Pause({Binds = {"example1", "example2"}, Inputs = Enum.KeyCode.X)
 --Rokeys.Resume() works the same way except will only resume the keybinds
 ```
 
-##Clearing Keybinds
+## Clearing Keybinds
 
 When clearing keybinds you have three choices, **"ALL"** (which clears all `Binds` and `Inputs`), **"BINDS"** (which clears all `Binds`), and **"INPUTS"** (which you can imagine what it'd do)
 
@@ -188,7 +188,7 @@ Rokeys.New({
 })
 ```
 
-The `new` function also returns two `tables` (as of v2), one holding the Binds created and one holding the Inputs created
+The `new` function also returns two `tables` (as of v2), one holding the `Binds` created and one holding the `Inputs` created
 
 ```lua
 local binds, inputs = Rokeys.New({
@@ -202,8 +202,9 @@ local binds, inputs = Rokeys.New({
 --the variable binds is now {"example1"}
 --the variable inputs is now {Enum.KeyCode.X, Enum.KeyCode.Y}
 ```
+> the names of the two variables do not matter
 
-You can also manually define what one thing references to another thing (`input` triggers certain `bind` and vice versa) by providing a `table` with the key value **Refs**
+You can also manually define what one thing references to another thing (`Input` triggers certain `Nind` and vice versa) by providing a `table` with the key value **Refs**
 
 ```lua
 Rokeys.New({ 
@@ -230,12 +231,24 @@ output:
     Refs = {Enum.KeyCode.X}
   },
   {
-    Name = "exaple2",
+    Name = "example2",
     Value = true,
     Paused = true
   }
 }
 --the changes aren't as noticable here
+```
+> Another example is the following
+```lua
+print(Rokeys.Format("example"))
+```
+output:
+```lua
+{
+  {
+    Name = "example"
+  {
+{
 ```
 
 ## Changing the code
@@ -247,10 +260,10 @@ I made my best effort to comment as much as possible inside of my code and will 
 
 ### Manually reading data
 
-All data for **Keybinds** are stored in two tables, `BindTable` and `InputTable` *(both in the form of a dictionary)*. These two tables' formatting are as follows:
+All data for **Keybinds** are stored in two tables, `BindTable` and `InputTable`. These two tables' formatting are as follows:
 ```lua
 RoKeys.BindTable {
-  bindName { --the name of the bind, depending on how many binds you have there will be that many of these
+  bind { --the name of the bind, depending on how many binds you have there will be that many of these
     Value = boolean, --wether it is on or off
     Toggle = boolean, --wether toggle is on
     Paused = boolean, --wether it is paused
