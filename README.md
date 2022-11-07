@@ -23,7 +23,7 @@ On this page you will find sections labeled as follows: <br>
 ## Installation
 
 To **Install** all you need to do is download the *latest version* from the **Releases Page**. <br>
-The file to look for will look *something* like this: `RoKeysV1.lua`
+The file to look for will look *something* like this: `RoKeys.lua`
 > if using an older version: the documentation can be found in the source files on the download page
 
 Once you've downloaded the file to your *prefered destination* all you have to do is make a **Roblox project** <br>
@@ -48,7 +48,7 @@ Once installed you can now use **RoKeys**, except with one extra step. <br>
 Inside that script paste the following code: <br>
 ```lua
 local ReplicatedStorage = game:GetService("Replicated Storage")
-local RoKeys = require(ReplicatedStorage.RoKeysV1)
+local RoKeys = require(ReplicatedStorage.RoKeys)
 
 --you may have to edit this depending on where you put RoKeys and the version of RoKeys
 ```
@@ -56,20 +56,20 @@ And now you are ready to take full advantage of **RoKeys**.
 
 ### Adding keybinds
 
-To add a **KeyBind** use the function `Add`. the function takes the name of a `Bind` *(as a string)*, the `Input` you want to assign to the `Bind` *(as an EnumItem)*, and `BindToggle` and `InputToggle` *(as booleans)* which determine wether the bind and input should use a toggle behavior.
+To add a **KeyBind** use the function `New`. the function takes the name of a `Bind` *(as a string)*, the `Input` you want to assign to the `Bind` *(as an EnumItem)*, and `BindToggle` and `InputToggle` *(as booleans)* which determine wether the bind and input should use a toggle behavior.
 > as of v2 `Enum.KeyCode` is the only supported input type.
 ```lua
-RoKeys.Add({ 
+RoKeys.New({ 
   Bind = "example", 
   Input = Enum.KeyCode.X, 
   BindToggle = true. 
-  InputToggle = false 
+  InputToggle = false
 })
 --because this is a dictionary it does not matter what order you provide values in
 ```
 This function can also be written where the `Bind`/`Input` are tables, containing both the `Bind`/`Input`'s `Name` and wether they use a toggle behavior.
 ```lua
-RoKeys.Add({ 
+RoKeys.New({ 
   Bind = {
     Name = "example", 
     Toggle = true
@@ -84,7 +84,7 @@ RoKeys.Add({
 ```
 You can also add *multiple* `Inputs`, `Binds`, or both in **one** function!
 ```lua
-RoKeys.Add({ 
+RoKeys.New({ 
   Bind = "two inputs", 
   Input = {
     Enum.KeyCode.X, 
@@ -93,7 +93,7 @@ RoKeys.Add({
   --one bind has two inputs
 }) 
 
-RoKeys.Add({ 
+RoKeys.New({ 
   Bind = {
     "bind 1", 
     "bind 2"
@@ -102,7 +102,7 @@ RoKeys.Add({
   --two binds, each with one input
 }) 
 
-RoKeys.Add({ 
+RoKeys.New({ 
   Bind = {
     "two inputs 1", 
     "two inputs 2"
@@ -154,54 +154,70 @@ end
 ```
 > `InputState` has the same usage except reads from wether an input is on.
 
+##Pausing and Resuming Keybinds
+
+Pausing Keybinds is about the easiest thing you can do, provide the `binds` and `inputs` you want to pause/resume and your comand will be upheld
+```lua
+Rokeys.Pause({Binds = {"example1", "example2"}, Inputs = Enum.KeyCode.X)
+--like other functions, you only need to give one or the other
+
+--Rokeys.Resume() works the same way except will only resume the keybinds
+```
+
+##Clearing Keybinds
+
+When clearing keybinds you have three choices, **"ALL"** (which clears all binds and inputs), **"BINDS"** (which clears all binds), and **"INPUTS"** (which you can imagine what it'd do)
+
+```lua
+Rokeys.Reset("ALL") --when this line is run everything is reset
+```
+
 ## Advanced Usage
 
-this section is for advanced users, ready to get their hands dirty and work with my dirty code lol
+### Adding keybinds... Part 2
 
-### Manually reading data
+this will outline more you can do with the `New` function, as an example, here is a way to apply toggles, values, or pauses en-masse without BindToggle or InputToggle:
 
-All data for **Keybinds** are stored in two tables, `bindTable` and `inputTable` *(both in the form of a dictionary)*. These two tables' formatting is as follows:
 ```lua
-RoKeys.bindTable {
-  bindName { --the name of the bind, depending on how many binds you have there will be that many of these
-    Value = boolean, --wether it is on or off
-    Toggle = boolean, --wether toggle is on
-    Refs { --reference(s) to it's input(s)
-      InputName, --names of the input(s)
-      ...
-    }
+Rokeys.New({
+  Binds = {
+    { Name = "example1" },
+    { Name = "example2" },
+    Toggle = true --all binds have a toggle
   }
-}
-
-RoKeys.inputTable { --same layout as bindTable
-  input { --this will likely say token followed by a string of numbers, do not worry as it is just a side effect of using EnumItems
-    Value = boolean,
-    Toggle = boolean,
-    Refs {
-      BindName
-    }
-  }
-}
+})
 ```
-I strongly recommend using the built in functions to add and remove Keybinds. this section is for if you want to be able to read more data or have a better understanding of how it is stored
+
+The fction also returns two tables (as of v2), one holding the Binds created and one holding the Inputs created
+
+```lua
+local binds, inputs = Rokesy.New
+```
 
 ### The Format Function
 
-This `Format` Function Takes what you would use as the `Input` or the `Bind` in the `Add` function and returns it as a standard format
+This `Format` Function Takes what you would use as the `Input` or the `Bind` in the `New` function and returns it as a standard format
 ```lua
-print(Rokeys.Format("example"))
+print(Rokeys.Format({ 
+  { Name = "example1", Toggle = true, Refs = {Enum.KeyCode.X} }, 
+  { Name = "example2", Value = true, Paused = true }
+}))
 ```
 output:
 ```lua
 {
   { 
-    Name = "example" 
-    Toggle = nil
-    Value = nil
-    --because Toggle and Value are nil they will not actually show up
+    Name = "example1",
+    Toggle = true,
+    Refs = {Enum.KeyCode.X}
+  },
+  {
+    Name = "exaple2",
+    Value = true,
+    Paused = true
   }
-  ...
 }
+--the changes aren't as noticable here
 ```
 
 ## Changing the code
@@ -210,6 +226,35 @@ output:
 
 I made my best effort to comment as much as possible inside of my code and will incrementally be bringing some of that here, if you have any questions you can ask them on **Github Issues** *(may not respond very fast)* or **Discord** *(link found at start of the document)*. 
 > For frequently asked questions look in the following section (**FAQ**).
+
+### Manually reading data
+
+All data for **Keybinds** are stored in two tables, `BindTable` and `InputTable` *(both in the form of a dictionary)*. These two tables' formatting are as follows:
+```lua
+RoKeys.BindTable {
+  bindName { --the name of the bind, depending on how many binds you have there will be that many of these
+    Value = boolean, --wether it is on or off
+    Toggle = boolean, --wether toggle is on
+    Paused = boolean, --wether it is paused
+    Refs { --reference(s) to it's input(s)
+      InputName, --names of the input(s)
+      ...
+    }
+  }
+}
+
+RoKeys.InputTable { --same layout as bindTable
+  input { --this will likely say token followed by a string of numbers, do not worry as it is just a side effect of using EnumItems
+    Value = boolean,
+    Toggle = boolean,
+    Paused = boolean,
+    Refs {
+      BindName
+    }
+  }
+}
+```
+I strongly recommend using the built in functions to add and remove Keybinds. this section is for if you want to be able to read more data or have a better understanding of how it is stored
 
 ## FAQ
 
