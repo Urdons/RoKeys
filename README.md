@@ -176,7 +176,7 @@ Rokeys.Reset("ALL") --when this line is run everything is reset
 
 ### Adding keybinds... Part 2
 
-this will outline more you can do with the `New` function, as an example, here is a way to apply toggles, values, or pauses en-masse without BindToggle or InputToggle:
+this will outline more you can do with the `New` function, as an example, here is a way to apply `toggles`, `values`, or `pauses` en-masse without `BindToggle` or `InputToggle`:
 
 ```lua
 Rokeys.New({
@@ -188,10 +188,28 @@ Rokeys.New({
 })
 ```
 
-The fction also returns two tables (as of v2), one holding the Binds created and one holding the Inputs created
+The `new` function also returns two `tables` (as of v2), one holding the Binds created and one holding the Inputs created
 
 ```lua
-local binds, inputs = Rokesy.New
+local binds, inputs = Rokeys.New({
+  Binds = "example1",
+  Inputs = {
+    Enum.KeyCode.X,
+    Enum.KeyCode.Y
+  }
+})
+
+--the variable binds is now {"example1"}
+--the variable inputs is now {Enum.KeyCode.X, Enum.KeyCode.Y}
+```
+
+You can also manually define what one thing references to another thing (`input` triggers certain `bind` and vice versa) by providing a `table` with the key value **Refs**
+
+```lua
+Rokeys.New({ 
+  Binds = {Name = "example", Refs = Enum.KeyCode.X}
+})
+--this method is not reccomended as providing already existing inputs along with binds connects both of them, instead of the user having to manually connect the two together themselves
 ```
 
 ### The Format Function
