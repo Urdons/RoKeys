@@ -91,11 +91,10 @@ function Custom.Format (item)
 			--array (which means they are probobly providing multiple items)
 			for i, iitem in ipairs(item) do
 				if typeof(iitem) == "table" then
-					--treats foo as a table (TODO: assumes it's a dictonary so should probobly error if it's not)
+					--treats iitem as a table (TODO: assumes it's a dictonary so should probobly error if it's not)
 					insert(iitem)
 				else
-					--treats foo as just one value so sets Name
-					--print(iitem)
+					--treats iitem as just one value so sets Name
 					insert({Name = iitem})
 				end
 			end
@@ -183,7 +182,6 @@ function Custom.Remove (args)
 	for j, ibind in ipairs(b) do
 		if not inputs then
 			for k, iinput in ipairs(Custom.BindTable[ibind.Name].Refs) do
-				print(k)
 				--remove references to bind in it's inputs
 				table.remove(Custom.InputTable[iinput].Refs, table.find(Custom.InputTable[iinput].Refs, ibind.Name))
 			end
@@ -222,9 +220,7 @@ function Custom.Reset (scale : string)
 		Custom.InputTable = {}
 	elseif scale == "BINDS" then
 		--resets only binds and their references
-		print("ok", Custom.BindTable)
 		for i, bind in pairs(Custom.BindTable) do
-			print("yay")
 			for j, ref in ipairs(bind.Refs) do
 				table.remove(Custom.InputTable[ref].Refs, table.find(Custom.InputTable[ref].Refs, bind))
 			end
@@ -338,11 +334,9 @@ function Custom.Pause (args)
 	
 	for i, bind in ipairs(binds) do
 		Custom.BindTable[bind].Paused = if Custom.BindTable[bind].Paused then false else true
-		print(Custom.BindTable[bind].Paused)
 	end
 	for i, input in ipairs(inputs) do
 		Custom.BindTable[input].Paused = if Custom.BindTable[input].Paused then false else true
-		print(Custom.BindTable[input].Paused)
 	end
 end
 
