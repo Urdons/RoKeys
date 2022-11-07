@@ -60,21 +60,21 @@ To add a **KeyBind** use the function `New`. the function takes the name of a `B
 > as of v2 `Enum.KeyCode` is the only supported input type.
 ```lua
 RoKeys.New({ 
-  Bind = "example", 
-  Input = Enum.KeyCode.X, 
+  Binds = "example", 
+  Inputs = Enum.KeyCode.X, 
   BindToggle = true. 
   InputToggle = false
 })
 --because this is a dictionary it does not matter what order you provide values in
 ```
-This function can also be written where the `Bind`/`Input` are tables, containing both the `Bind`/`Input`'s `Name` and wether they use a toggle behavior.
+This function can also be written where the `Binds`/`Inputs` are tables, containing both the `Binds`/`Inputs`' `Name` and wether they use a toggle behavior.
 ```lua
 RoKeys.New({ 
-  Bind = {
+  Binds = {
     Name = "example", 
     Toggle = true
   }, 
-  Input = {
+  Inputs = {
     Name = Enum.KeyCode.X, 
     Toggle = false
   } 
@@ -85,8 +85,8 @@ RoKeys.New({
 You can also add *multiple* `Inputs`, `Binds`, or both in **one** function!
 ```lua
 RoKeys.New({ 
-  Bind = "two inputs", 
-  Input = {
+  Binds = "two inputs", 
+  Inputs = {
     Enum.KeyCode.X, 
     Enum.KeyCode.Y
   } 
@@ -94,20 +94,20 @@ RoKeys.New({
 }) 
 
 RoKeys.New({ 
-  Bind = {
+  Binds = {
     "bind 1", 
     "bind 2"
   }, 
-  Input = Enum.KeyCode.X 
+  Inputs = Enum.KeyCode.X 
   --two binds, each with one input
 }) 
 
 RoKeys.New({ 
-  Bind = {
+  Binds = {
     "two inputs 1", 
     "two inputs 2"
   }, 
-  Input = {
+  Inputs = {
     Enum.KeyCode.X, 
     Enum.KeyCode.Y
   } 
@@ -118,26 +118,26 @@ RoKeys.New({
 
 ### Removing keybinds
 
-The function `Remove` takes the name of a `Bind` *(as a string)* and an `Input` *(as an EnumItem)*. The function will use the provided values to filter through the existing Keybinds and delete only the `Input` for the provided `Bind` and the `Bind` for the provided `Input`.
+The function `Remove` takes the name of a `Bind` *(as a string)* and an `Input` *(as an EnumItem)*. The function will use the provided values to filter through the existing Keybinds and delete only the `Inputs` for the provided `Binds` and the `Binds` for the provided `Inputs`.
 ```lua
 RoKeys.Remove({ 
-  Bind = "example", 
-  Input = Enum.KeyCode.X 
+  Binds = "example", 
+  Inputs = Enum.KeyCode.X 
 })
 --the Input "Enum.KeyCode.X" and the Bind "example" will no longer interact
 ```
-> similarly to `Add`, `Remove` supports deleting multiple `Binds` and `Inputs`.
+> similarly to `New`, `Remove` supports deleting multiple `Binds` and `Inputs`.
 
 You can also delete `Inputs` or `Binds` en-masse as shown below:
 ```lua
 RoKeys.Remove({ 
-  Bind = "example" 
+  Binds = "example" 
   --notice you are not providing input
 }) 
 --the Bind "example" will be deleted in it's entirety
 
 RoKeys.Remove({ 
-  Input = Enum.KeyCode.X 
+  Inputs = Enum.KeyCode.X 
   --notice you are not providing bind
 }) 
 --the Input Enum.KeyCode.X will be deleted in it's entirety
@@ -145,7 +145,7 @@ RoKeys.Remove({
 
 ### Reading Keybinds
 
-Reading Keybinds is a lot simpler as compared to *Adding* or *Removing* them. To read keybinds you are provided *two* functions; `BindState` and `InputState`, in each all you need to do is provide either the `bind` or `input` *(depending on which function you are using)* and the function will **return** a `boolean` of wether the `Bind`/`Input` is **true** or **false**.
+Reading Keybinds is a lot simpler as compared to *Adding* or *Removing* them. To read keybinds you are provided *two* functions; `BindState` and `InputState`, in each all you need to do is provide either the `Bind` or `Input` *(depending on which function you are using)* and the function will **return** a `boolean` of wether the `Bind`/`Input` is **true** or **false**.
 ```lua
 if RoKeys:BindState("example") then --if bind "example" is on...
   --do something
@@ -156,7 +156,7 @@ end
 
 ##Pausing and Resuming Keybinds
 
-Pausing Keybinds is about the easiest thing you can do, provide the `binds` and `inputs` you want to pause/resume and your comand will be upheld
+Pausing Keybinds is about the easiest thing you can do, provide the `Binds` and `Inputs` you want to pause/resume and your comand will be upheld
 ```lua
 Rokeys.Pause({Binds = {"example1", "example2"}, Inputs = Enum.KeyCode.X)
 --like other functions, you only need to give one or the other
@@ -166,7 +166,7 @@ Rokeys.Pause({Binds = {"example1", "example2"}, Inputs = Enum.KeyCode.X)
 
 ##Clearing Keybinds
 
-When clearing keybinds you have three choices, **"ALL"** (which clears all binds and inputs), **"BINDS"** (which clears all binds), and **"INPUTS"** (which you can imagine what it'd do)
+When clearing keybinds you have three choices, **"ALL"** (which clears all `Binds` and `Inputs`), **"BINDS"** (which clears all `Binds`), and **"INPUTS"** (which you can imagine what it'd do)
 
 ```lua
 Rokeys.Reset("ALL") --when this line is run everything is reset
