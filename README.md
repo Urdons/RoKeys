@@ -5,35 +5,22 @@
 **RoKeys** is an *Open-source* Keybinding script for **Roblox** that strives for *usability* and *versatility*
 
 Links: 
+- **Trello**: *https://trello.com/b/QfWxcNrH/rokeys*
 - **Discord**: *https://discord.gg/AyqHpaUnTe*
 - **Roblox**: *https://www.roblox.com/library/10263313095/RoKeys*
 
 On this page you will find sections labeled as follows: <br>
-- **Terms of Use**
 - **Installation**, <br>
 - **Basic Use**, <br>
 - **Advanced Use,** <br>
 - **FAQ,** and <br>
 - **Licensing** <br>
 
-## Terms of Use
-
-### By using this project you Agree to these terms and the terms of the official licensing. <br>
-
-When using **RoKeys** in your game, please give credit back to this project, exposing this project to people who may need it is a big goal of mine and I hope that those of you who use it can abide by this rule. <br>
-**Official Branding can be found in the folder labeled `Branding`**.
-
-When **branching off** of this project, **redistributing** it, or making **your own distribution**, please reference back to this page. For those who create their own distribution, please provide evidence that there is an **original** change in the code from this project to yours, copying code is not tolerated unless otherwise given permission *(this applies to copying code from other distributions, make sure you have permission before reusing code)*.
-
-**Do not forget** to take note of the `licensing` file, these additional terms are layered on top of terms found in that file *(**Apache License 2.0**)* and are not directly affiliated to the original lisencing. **You should thoroughly read through those conditions before using this project**.
-> you can also find a *link* to the **Apache License 2.0** along with some other info in the section labeled **Licensing**
-
 ## Installation
 
-**BEFORE INSTALLING PLEASE READ THE TERMS OF USE**
-
 To **Install** all you need to do is download the *latest version* from the **Releases Page**. <br>
-The file to look for will look *something* like this: `RoKeysV1.lua`
+The file to look for will look *something* like this: `RoKeys.lua`
+> if using an older version: the documentation can be found in the source files on the download page
 
 Once you've downloaded the file to your *prefered destination* all you have to do is make a **Roblox project** <br>
 Then *(assuming you know how to make a new project)*, in **Roblox Studio** navigate to the `View` tab as seen at the *top* of the window. <br>
@@ -57,7 +44,7 @@ Once installed you can now use **RoKeys**, except with one extra step. <br>
 Inside that script paste the following code: <br>
 ```lua
 local ReplicatedStorage = game:GetService("Replicated Storage")
-local RoKeys = require(ReplicatedStorage.RoKeysV1)
+local RoKeys = require(ReplicatedStorage.RoKeys)
 
 --you may have to edit this depending on where you put RoKeys and the version of RoKeys
 ```
@@ -65,88 +52,236 @@ And now you are ready to take full advantage of **RoKeys**.
 
 ### Adding keybinds
 
-To add a **keybind** use the function `AddKeyBind`. the function takes the name of a `bind` *(as a string)*, the `input` you want to assign to the bind *(as an EnumItem)*, and two `booleans` which determine wether then `bind` and `input` are *toggleable*.
-> as of v1 `Enum.KeyCode` is the only supported input type.
+To add a **KeyBind** use the function `New`. the function takes the name of a `Bind` *(as a string)*, the `Input` you want to assign to the `Bind` *(as an EnumItem)*, and `BindToggle` and `InputToggle` *(as booleans)* which determine wether the bind and input should use a toggle behavior.
+> as of v2 `Enum.KeyCode` is the only supported input type.
 ```lua
-AddKeyBind("example", Enum.KeyCode.X, true. false)
---the first boolean effects the bind while the second effects the input
+RoKeys.New({ 
+  Binds = "example", 
+  Inputs = Enum.KeyCode.X, 
+  BindToggle = true. 
+  InputToggle = false
+})
+--because this is a dictionary it does not matter what order you provide values in
 ```
-This function can also be written where the `bind` and/or `input` are tables, containing both the `bind`/`input` and wether they are *toggleable* or not.
+This function can also be written where the `Binds`/`Inputs` are tables, containing both the `Binds`/`Inputs`' `Name` and wether they use a toggle behavior.
 ```lua
-AddKeyBind({"example", true}, {Enum.KeyCode.X, false}) --notice the surrounding {} brackets
---this will execute the same as the previous example
+RoKeys.New({ 
+  Binds = {
+    Name = "example", 
+    Toggle = true
+  }, 
+  Inputs = {
+    Name = Enum.KeyCode.X, 
+    Toggle = false
+  } 
+  --notice the {} brackets surrounding the binds and inputs
+}) 
+--this does the same thing as the previous example
 ```
-You can also add *multiple* `inputs`, `binds`, or both in **one** function!
+You can also add *multiple* `Inputs`, `Binds`, or both in **one** function!
 ```lua
-AddKeyBind("two inputs", {Enum.KeyCode.X, Enum.KeyCode.Y}) --one bind has two inputs
+RoKeys.New({ 
+  Binds = "two inputs", 
+  Inputs = {
+    Enum.KeyCode.X, 
+    Enum.KeyCode.Y
+  } 
+  --one bind has two inputs
+}) 
 
-AddKeyBind({"bind 1", "bind 2"}, Enum.KeyCode.X) --two binds, each with one input
+RoKeys.New({ 
+  Binds = {
+    "bind 1", 
+    "bind 2"
+  }, 
+  Inputs = Enum.KeyCode.X 
+  --two binds, each with one input
+}) 
 
-AddKeyBind({"two inputs 1", "two inputs 2"}, {Enum.KeyCode.X, Enum.KeyCode.Y}) --two binds, each with two inputs
+RoKeys.New({ 
+  Binds = {
+    "two inputs 1", 
+    "two inputs 2"
+  }, 
+  Inputs = {
+    Enum.KeyCode.X, 
+    Enum.KeyCode.Y
+  } 
+  --two binds, each with two inputs
+}) 
 ```
-> **not limited to two for each**. you can also still provide `toggles` for each individual `bind` and `input`, any toggles provided in the `3rd` and `4th` slots will apply for any `bind` or `input` without a toggle behavior provided.
+> **not limited to two for each**. you can also still provide `Toggle` for each individual `Bind` and `Input`, any toggles provided as `BindToggle` or `InputToggle` slots will apply for every `Bind` or `Input` without their own toggle provided.
 
 ### Removing keybinds
 
-The function `DelKeyBind` takes the name of a `bind` *(as a string)* and an `input` *(as an EnumItem)*. The function will use the provided values to filter through the existing Keybinds and delete only the `input` for the provided `bind` and the `bind` for the provided `input`, essentially making a `bind` no longer usable with the provided `input`.
+The function `Remove` takes the name of a `Bind` *(as a string)* and an `Input` *(as an EnumItem)*. The function will use the provided values to filter through the existing Keybinds and delete only the `Inputs` for the provided `Binds` and the `Binds` for the provided `Inputs`.
 ```lua
-DelKeyBind("example", Enum.KeyCode.X)
---the input "Enum.KeyCode.X" will no longer interact with the bind "example"
+RoKeys.Remove({ 
+  Binds = "example", 
+  Inputs = Enum.KeyCode.X 
+})
+--the Input "Enum.KeyCode.X" and the Bind "example" will no longer interact
 ```
-> similarly to `AddKeyBind`, `DelKeyBind` supports deleting multiple `binds` and `inputs`, I reccomend being more careful however, as you could accidentally delete keybinds.
+> similarly to `New`, `Remove` supports deleting multiple `Binds` and `Inputs`.
 
-You can also delete `inputs` or `binds` en-masse as shown below:
+You can also delete `Inputs` or `Binds` en-masse as shown below:
 ```lua
-DelKeyBind("example", nil) --notice the input is nil
---the bind "example" will be deleted in it's entirety
+RoKeys.Remove({ 
+  Binds = "example" 
+  --notice you are not providing input
+}) 
+--the Bind "example" will be deleted in it's entirety
 
-DelKeyBind(nil, Enum.KeyCode.X) --notice the bind is nil
---the input Enum.KeyCode.X will be deleted in it's entirety
+RoKeys.Remove({ 
+  Inputs = Enum.KeyCode.X 
+  --notice you are not providing bind
+}) 
+--the Input Enum.KeyCode.X will be deleted in it's entirety
 ```
 
 ### Reading Keybinds
 
-Reading Keybinds is a lot simpler as compared to *adding* or *removing* them. To read keybinds you are provided *two* functions; `BindState` and `InputState`, in each all you need to do is provide either the `bind` or `input` *(depending on which function you are using)* and the function will **return** a `boolean` of wether the `bind`/`input` is **off** or **on**.
+Reading Keybinds is a lot simpler as compared to *Adding* or *Removing* them. To read keybinds you are provided *two* functions; `BindState` and `InputState`, in each all you need to do is provide either the `Bind` or `Input` *(depending on which function you are using)* and the function will **return** a `boolean` of wether the `Bind`/`Input` is **true** or **false**.
 ```lua
-if BindState("example") then --if bind "example" is on...
+if RoKeys:BindState("example") then --if bind "example" is on...
   --do something
 end
---notice the function is in an if statement, that is because it returns a boolean
+--notice the function is in an if statement
 ```
 > `InputState` has the same usage except reads from wether an input is on.
 
+## Pausing and Resuming Keybinds
+
+Pausing Keybinds is about the easiest thing you can do, provide the `Binds` and `Inputs` you want to pause/resume and your comand will be upheld
+```lua
+Rokeys.Pause({Binds = {"example1", "example2"}, Inputs = Enum.KeyCode.X)
+--like other functions, you only need to give one or the other
+
+--Rokeys.Resume() works the same way except will only resume the keybinds
+```
+
+## Clearing Keybinds
+
+When clearing keybinds you have three choices, **"ALL"** (which clears all `Binds` and `Inputs`), **"BINDS"** (which clears all `Binds`), and **"INPUTS"** (which you can imagine what it'd do)
+
+```lua
+Rokeys.Reset("ALL") --when this line is run everything is reset
+```
+
 ## Advanced Usage
 
-this section is for advanced users, ready to get their hands dirty and work with my dirty code lol
+### Adding keybinds... Part 2
+
+this will outline more you can do with the `New` function, as an example, here is a way to apply `toggles`, `values`, or `pauses` en-masse without `BindToggle` or `InputToggle`:
+
+```lua
+Rokeys.New({
+  Binds = {
+    { Name = "example1" },
+    { Name = "example2" },
+    Toggle = true --all binds have a toggle
+  }
+})
+```
+
+The `new` function also returns two `tables` (as of v2), one holding the `Binds` created and one holding the `Inputs` created
+
+```lua
+local binds, inputs = Rokeys.New({
+  Binds = "example1",
+  Inputs = {
+    Enum.KeyCode.X,
+    Enum.KeyCode.Y
+  }
+})
+
+--the variable binds is now {"example1"}
+--the variable inputs is now {Enum.KeyCode.X, Enum.KeyCode.Y}
+```
+> the names of the two variables do not matter
+
+You can also manually define what one thing references to another thing (`Input` triggers certain `Nind` and vice versa) by providing a `table` with the key value **Refs**
+
+```lua
+Rokeys.New({ 
+  Binds = {Name = "example", Refs = Enum.KeyCode.X}
+})
+--this method is not reccomended as providing already existing inputs along with binds connects both of them, instead of the user having to manually connect the two together themselves
+```
+
+### The Format Function
+
+This `Format` Function Takes what you would use as the `Input` or the `Bind` in the `New` function and returns it as a standard format
+```lua
+print(Rokeys.Format({ 
+  { Name = "example1", Toggle = true, Refs = {Enum.KeyCode.X} }, 
+  { Name = "example2", Value = true, Paused = true }
+}))
+```
+output:
+```lua
+{
+  { 
+    Name = "example1",
+    Toggle = true,
+    Refs = {Enum.KeyCode.X}
+  },
+  {
+    Name = "example2",
+    Value = true,
+    Paused = true
+  }
+}
+--the changes aren't as noticable here
+```
+> Another example is the following
+```lua
+print(Rokeys.Format("example"))
+```
+output:
+```lua
+{
+  {
+    Name = "example"
+  {
+{
+```
+
+## Changing the code
+
+**BEFORE CHANGING THE CODE PLEASE READ THE LICENSE**
+
+I made my best effort to comment as much as possible inside of my code and will incrementally be bringing some of that here, if you have any questions you can ask them on **Github Issues** *(may not respond very fast)* or **Discord** *(link found at start of the document)*. 
+> For frequently asked questions look in the following section (**FAQ**).
 
 ### Manually reading data
 
-All data for **Keybinds** are stored in two tables, `bindTable` and `inputTable` *(both in the form of a dictionary)*. These two tables' formatting is as follows:
+All data for **Keybinds** are stored in two tables, `BindTable` and `InputTable`. These two tables' formatting are as follows:
 ```lua
-bindTable {
-  bindName { --the name of the bind, depending on how many binds you have there will be that many of these
-    boolean, --wether it is on or off
-    boolean, --wether toggle is on
-    input --reference(s) to it's input(s), multiple may be listed here
+RoKeys.BindTable {
+  bind { --the name of the bind, depending on how many binds you have there will be that many of these
+    Value = boolean, --wether it is on or off
+    Toggle = boolean, --wether toggle is on
+    Paused = boolean, --wether it is paused
+    Refs { --reference(s) to it's input(s)
+      InputName, --names of the input(s)
+      ...
+    }
   }
 }
 
-inputTable { --same layout as bindTable
+RoKeys.InputTable { --same layout as bindTable
   input { --this will likely say token followed by a string of numbers, do not worry as it is just a side effect of using EnumItems
-    boolean,
-    boolean,
-    bindName --like bindTable, multiple may be listed here
+    Value = boolean,
+    Toggle = boolean,
+    Paused = boolean,
+    Refs {
+      BindName
+    }
   }
 }
 ```
 I strongly recommend using the built in functions to add and remove Keybinds. this section is for if you want to be able to read more data or have a better understanding of how it is stored
-
-## Changing the code
-
-**BEFORE CHANGING THE CODE PLEASE READ THE TERMS OF USE**
-
-I made my best effort to comment as much as possible inside of my code and will incrementally be bringing some of that here, if you have any questions you can ask them on **Github Issues** *(may not respond very fast)* or **Discord** *(link found at start of the document)*. 
-> For frequently asked questions look in the following section (**FAQ**).
 
 ## FAQ
 
