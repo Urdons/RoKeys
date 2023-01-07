@@ -127,9 +127,9 @@ function Custom.New (args)
 			--if the bind does not already exist then create it
 			Custom.BindTable[ibind.Name] = {
 				Value = ibind.Value or args.Binds["Value"] or args["BindValue"] or false,
-				Toggle = ibind.Toggle or args.Binds["Toggle"] or args["BindToggle"] or false,
-				Paused = ibind.Paused or args.Binds["Paused"] or args["BindPaused"] or false,
-				Refs = ibind.Refs or args.Binds["Refs"] or args["BindRefs"] or {},
+				Toggle = ibind.Toggle or args["BindToggle"] or false,
+				Paused = ibind.Paused or args["BindPaused"] or false,
+				Refs = ibind.Refs or args["BindRefs"] or {},
 			}
 			table.insert(bs, ibind.Name)
 		end
@@ -145,9 +145,9 @@ function Custom.New (args)
 			--if the input does not already exist then create it
 			Custom.InputTable[iinput.Name] = {
 				Value = iinput.Value or args.Inputs["Value"] or args["InputValue"] or false,
-				Toggle = iinput.Toggle or args.Inputs["Toggle"] or args["InputToggle"] or false,
-				Paused = iinput.Paused or args.Inputs["Paused"] or args["InputPaused"] or false,
-				Refs = iinput.Refs or args.Inputs["Refs"] or args["InputRefs"] or {}
+				Toggle = iinput.Toggle or args["InputToggle"] or false,
+				Paused = iinput.Paused or args["InputPaused"] or false,
+				Refs = iinput.Refs or args["InputRefs"] or {}
 			}
 			table.insert(is, iinput.Name)
 		end
