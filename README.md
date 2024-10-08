@@ -72,9 +72,10 @@ When importing RoKeysService this is the class you are given. This class contain
 ### Method Summary
 | Method | Description |
 | ------ | ----------- |
-| **newBindFromKeyCode**(bindName: [**string**](https://create.roblox.com/docs/reference/engine/libraries/string), KeyCode?: [**Enum.KeyCode**](https://create.roblox.com/docs/reference/engine/enums/KeyCode)) : [**Binding**](#binding-class) | Creates a new Binding using a string as the name and, if provided, adds an Enum.Keycode as an input. |
-| **removeBind**(BindName : [**string**](https://create.roblox.com/docs/reference/engine/libraries/string)) : **void** | WIP. |
-| **getBindFromName**(BindName : [**string**](https://create.roblox.com/docs/reference/engine/libraries/string)) : [**Binding**](#binding-class) \| **undefined** | Returns a Binding using the provided string as the name to look for (case sensitive), if there is no bind with that name then the function returns undefined. |
+| **CreateBinding**(bindName : [**string**](https://create.roblox.com/docs/reference/engine/libraries/string), KeyCode? : [**Enum.KeyCode**](https://create.roblox.com/docs/reference/engine/enums/KeyCode)) : [**Binding**](#binding-class) | Creates a new Binding using a string as the name and, if provided, adds an Enum.Keycode as an input. |
+| **RemoveBinding**(bindName : [**string**](https://create.roblox.com/docs/reference/engine/libraries/string)) : **void** | WIP. |
+| **GetBindingFromName**(bindName : [**string**](https://create.roblox.com/docs/reference/engine/libraries/string)) : [**Binding**](#binding-class) \| **undefined** | Returns a Binding using the provided string as the name to look for (case sensitive), if there is no bind with that name then the function returns undefined. |
+| **GetVector2**(negativeX : [**Binding**](#binding-class), positiveX : [**Binding**](#binding-class), negativeY    : [**Binding**](#binding-class), positiveY : [**Binding**](#binding-class), dontNormalize ?: **boolean**) : [**Vector2**](https://create.roblox.com/docs/reference/engine/datatypes/Vector2) | Takes four bindings which will act as negative and positive influences on both the x and y parts of a vector2. The returned vector2 is normalized (has a magnitude of one), but this behavior can be overridden with the optional boolean dontNormalize parameter. |
 
 ## Binding Class
 
@@ -95,7 +96,7 @@ This class is the backbone of Rokeys. Whenever you use the RoKeys class' ```newB
 | **addInput**(inputToAdd : [**Enum.KeyCode**](https://create.roblox.com/docs/reference/engine/enums/KeyCode)) : **void** | Adds the desired Enum.KeyCode to the binding's table of inputs. |
 | **removeInput**(inputToRemove : [**Enum.KeyCode**](https://create.roblox.com/docs/reference/engine/enums/KeyCode)) : **void** | Removes the desired Enum.KeyCode from the binding's table of inputs. |
 | **getBindName**() : [**string**](https://create.roblox.com/docs/reference/engine/libraries/string) | Returns the name of the Binding as a string. |
-| **getInputs**() : [**Enum.KeyCode**](https://create.roblox.com/docs/reference/engine/enums/KeyCode)[] | Returns an array of Enum.KeyCode containing all inputs given to the binding |
+| **getInputs**() : [**Enum.KeyCode**](https://create.roblox.com/docs/reference/engine/enums/KeyCode)[] | Returns an array of Enum.KeyCode containing all inputs given to the binding. |
 | **hasInput**(inputToCheck : [**Enum.KeyCode**](https://create.roblox.com/docs/reference/engine/enums/KeyCode)) : **boolean** | Takes an Enum.KeyCode and determines if it is an input given to the binding, returns true if it is found and false is not. |
 | **disconnect**() : **void** | Destroys all events associated with the binding and clears the table of inputs, essentially making the binding unusable. |
 
@@ -104,19 +105,3 @@ This class is the backbone of Rokeys. Whenever you use the RoKeys class' ```newB
 **FAQ** or **Frequently Asked Questions**, more specific questions can be found in the **Discord** *(link found at start of the document)*
 
 > Currently nothing here, this will become more populated as people ask questions. 
-
-## Licensing ***TODO***
-
-Copyright [2022] [Urdons]
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
